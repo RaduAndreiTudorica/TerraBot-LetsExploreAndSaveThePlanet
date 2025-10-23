@@ -1,14 +1,20 @@
 package main.entities;
 
-import main.Section;
+import main.core.Entity;
+import main.core.Section;
+import main.environment.soil.Soil;
+import main.environment.water.Water;
 
 import java.util.*;
+
+
 
 public class Plant extends Entity {
 
     private static final Map<String, Float> BASE_OXYGEN_MAP;
     private static final Map<String, Float> MATURITY_BONUS_MAP;
     private static final Map<String, Integer> BLOCKING_PROBABILITY_MAP;
+    private static final String[] MATURITY_STAGES = {"young", "mature", "old", "dead"};
 
     static {
         BASE_OXYGEN_MAP = new HashMap<>();
@@ -36,12 +42,13 @@ public class Plant extends Entity {
     private int plant_possibility;
     private double growthLevel;
 
-    public Plant(String name, double mass, List<Section> sections, String type) {
-        super(name, mass,  sections);
+    public Plant(String name, double mass, Section section, String type) {
+        super(name, mass,  section);
 
         this.type = type;
         this.status = "young";
         this.plant_possibility = BLOCKING_PROBABILITY_MAP.getOrDefault(type, 0);
+        this.growthLevel = 0.0;
     }
 
     public float getOxygenProduction() {
@@ -72,6 +79,27 @@ public class Plant extends Entity {
 
     public int getPlant_possibility() {
         return this.plant_possibility;
+    }
+
+    public void beEaten() {
+        this.status = "dead";
+    }
+
+    public boolean isDead() {
+        return this.status.equals("dead");
+    }
+
+    public void grow() {
+        this.growthLevel += Water.GROWTH_FACTOR;
+        this.growthLevel += Soil.GROWTH_FACTOR;
+
+        if(this.growthLevel > 1.0) {
+            this.growthLevel = 0.0;
+            int currentStageIndex = Arrays.asList(MATURITY_STAGES).indexOf(this.status);
+            if (currentStageIndex < MATURITY_STAGES.length - 1) {
+                this.status = MATURITY_STAGES[currentStageIndex + 1];
+            }
+        }
     }
 }
 
