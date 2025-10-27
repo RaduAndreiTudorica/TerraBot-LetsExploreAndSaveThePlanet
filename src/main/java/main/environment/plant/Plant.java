@@ -1,13 +1,10 @@
-package main.entities;
+package main.environment.plant;
 
 import main.core.Entity;
-import main.core.Section;
 import main.environment.soil.Soil;
 import main.environment.water.Water;
 
 import java.util.*;
-
-
 
 public class Plant extends Entity {
 
@@ -42,8 +39,16 @@ public class Plant extends Entity {
     private int plant_possibility;
     private double growthLevel;
 
-    public Plant(String name, double mass, Section section, String type) {
-        super(name, mass,  section);
+    public Plant() {
+        super();
+        this.type = "Unknown";
+        this.status = "young";
+        this.plant_possibility = 0;
+        this.growthLevel = 0.0;
+    }
+
+    public Plant(String name, double mass, String type) {
+        super(name, mass);
 
         this.type = type;
         this.status = "young";
@@ -89,9 +94,8 @@ public class Plant extends Entity {
         return this.status.equals("dead");
     }
 
-    public void grow() {
-        this.growthLevel += Water.GROWTH_FACTOR;
-        this.growthLevel += Soil.GROWTH_FACTOR;
+    public void grow(double growthIncrement) {
+        this.growthLevel += growthIncrement;
 
         if(this.growthLevel > 1.0) {
             this.growthLevel = 0.0;

@@ -2,23 +2,44 @@ package main.environment.soil;
 
 import main.core.Entity;
 import main.core.Section;
+import main.environment.plant.Plant;
+
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public abstract class Soil extends Entity {
     public static final double GROWTH_FACTOR = 0.2;
-    public static final double WATER_ABSORPTION = 0.1;
+
+    private static final NavigableMap<Double, String> QUALITY_MAP = new TreeMap<>();
+
+    static {
+        QUALITY_MAP.put(0.0, "Poor");
+        QUALITY_MAP.put(40.0, "Moderate");
+        QUALITY_MAP.put(70.0, "Good");
+    }
 
     private String type;
     private double nitrogen;
     private double waterRetention;
     private double soilpH;
     private double organicMatter;
-    private double soilQuantity = 0.0;
+    private double soilQuality = 0.0;
     private double blockingProbability = 0.0;
+    public String qualityStatus;
 
-    public Soil(String name, double mass, Section section, String type,
+    public Soil() {
+        super();
+        this.type = "Generic";
+        this.nitrogen = 0.0;
+        this.waterRetention = 0.0;
+        this.soilpH = 7.0;
+        this.organicMatter = 0.0;
+    }
+
+    public Soil(String name, double mass, String type,
                 double nitrogen, double waterRetention,
                 double soilpH, double organicMatter) {
-        super(name, mass, section);
+        super(name, mass);
 
         this.type = type;
         this.nitrogen = nitrogen;
@@ -27,9 +48,19 @@ public abstract class Soil extends Entity {
         this.organicMatter = organicMatter;
     }
 
-    public abstract void calculateSoilQuality();
+    public abstract double calculateQuality();
 
-    public abstract void calculateBlockingProbability();
+    public abstract double calculateBlockingProbability();
+
+    public void interpretQuality() {
+        this.qualityStatus = QUALITY_MAP.floorEntry(this.soilQuality).getValue();
+    }
+
+    public void interactWithEnvironment(Section section, int iteration) {
+       for(Plant plant : section.getPlants()) {
+       plant.grow(GROWTH_FACTOR);
+       }
+    }
 
     public String getType() {
         return this.type;
@@ -37,7 +68,7 @@ public abstract class Soil extends Entity {
 
     public void setType(String type) {
         this.type = type;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
@@ -47,7 +78,7 @@ public abstract class Soil extends Entity {
 
     public void setNitrogen(double nitrogen) {
         this.nitrogen = nitrogen;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
@@ -57,7 +88,7 @@ public abstract class Soil extends Entity {
 
     public void setWaterRetention(double waterRetention) {
         this.waterRetention = waterRetention;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
@@ -67,7 +98,7 @@ public abstract class Soil extends Entity {
 
     public void setSoilpH(double soilpH) {
         this.soilpH = soilpH;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
@@ -77,15 +108,15 @@ public abstract class Soil extends Entity {
 
     public void setOrganicMatter(double organicMatter) {
         this.organicMatter = organicMatter;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
-    public double getSoilQuantity() {
-        return this.soilQuantity;
+    public double getSoilQuality() {
+        return this.soilQuality;
     }
-    void setSoilQuantity(double soilQuantity) {
-        this.soilQuantity = soilQuantity;
+    void setSoilQuality(double soilQuality) {
+        this.soilQuality = soilQuality;
     }
 
     public double getBlockingProbability() {
@@ -95,12 +126,4 @@ public abstract class Soil extends Entity {
     void setBlockingProbability(double blockingProbability) {
         this.blockingProbability = blockingProbability;
     }
-
-    public void waterSoil() {
-        this.waterRetention += Soil.WATER_ABSORPTION;
-        calculateSoilQuality();
-        calculateBlockingProbability();
-
-    }
-
 }

@@ -1,37 +1,44 @@
 package main.environment.soil;
 
-import main.core.Section;
-
 public class GrasslandSoil extends Soil {
     private double rootDensity;
 
-    public GrasslandSoil(String name, double mass, Section section,
-                         double nitrogen, double waterRetention,
-                         double soilpH, double organicMatter,
-                         double rootDensity) {
-        super(name, mass, section, "Grassland",
+    public GrasslandSoil() {
+        super();
+        this.rootDensity = 0.0;
+        calculateQuality();
+        calculateBlockingProbability();
+    }
+
+    public GrasslandSoil(String name, double mass, double nitrogen,
+                         double waterRetention, double soilpH,
+                         double organicMatter, double rootDensity) {
+        super(name, mass, "Grassland",
               nitrogen, waterRetention,
               soilpH, organicMatter);
         this.rootDensity = rootDensity;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
     @Override
-    public void calculateSoilQuality() {
+    public double calculateQuality() {
         double quality = (getNitrogen() * 1.3) + (getOrganicMatter() * 1.5) +
                 (this.rootDensity * 0.8);
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
-        setSoilQuantity(normalizedQuality);
+        setSoilQuality(normalizedQuality);
+        interpretQuality();
+        return normalizedQuality;
     }
 
     @Override
-    public void calculateBlockingProbability() {
+    public double calculateBlockingProbability() {
         double probability = ((50 - this.rootDensity) + (getWaterRetention() * 0.5)) / 75 * 100;
 
         setBlockingProbability(probability);
+        return probability;
     }
 
     public double getRootDensity() {
@@ -40,7 +47,7 @@ public class GrasslandSoil extends Soil {
 
     public void setRootDensity(double rootDensity) {
         this.rootDensity = rootDensity;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 }
