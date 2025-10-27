@@ -1,37 +1,44 @@
 package main.environment.soil;
 
-import main.core.Section;
-
 public class TundraSoil extends Soil {
     private double permafrostDepth;
 
-    public TundraSoil(String name, double mass, Section section,
-                      double nitrogen, double waterRetention,
-                      double soilpH, double organicMatter,
-                      double permafrostDepth) {
-        super(name, mass, section, "Tundra",
+    public TundraSoil() {
+        super();
+        this.permafrostDepth = 0.0;
+        calculateQuality();
+        calculateBlockingProbability();
+    }
+
+    public TundraSoil(String name, double mass, double nitrogen,
+                      double waterRetention, double soilpH,
+                      double organicMatter, double permafrostDepth) {
+        super(name, mass, "Tundra",
               nitrogen, waterRetention,
               soilpH, organicMatter);
         this.permafrostDepth = permafrostDepth;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 
     @Override
-    public void calculateSoilQuality() {
+    public double calculateQuality() {
         double quality = (getNitrogen() * 0.7) + (getOrganicMatter() * 0.5) -
                          (this.permafrostDepth * 1.5);
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
-        setSoilQuantity(normalizedQuality);
+        setSoilQuality(normalizedQuality);
+        interpretQuality();
+        return normalizedQuality;
     }
 
     @Override
-    public void calculateBlockingProbability() {
+    public double calculateBlockingProbability() {
         double probability = (50 - this.permafrostDepth) / 50 * 100;
 
         setBlockingProbability(probability);
+        return probability;
     }
 
     public double getPermafrostDepth() {
@@ -40,7 +47,7 @@ public class TundraSoil extends Soil {
 
     public void setPermafrostDepth(double permafrostDepth) {
         this.permafrostDepth = permafrostDepth;
-        calculateSoilQuality();
+        calculateQuality();
         calculateBlockingProbability();
     }
 }

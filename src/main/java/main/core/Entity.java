@@ -1,14 +1,29 @@
 package main.core;
 
-public abstract class Entity {
-    private String name = null;
-    private double mass = 0;
-    private Section sections;
+import java.util.*;
 
-    public Entity(String name, double mass,  Section sections) {
-        this.name = name;
-        this.mass = mass;
-        this.sections = sections;
+public abstract class Entity {
+    protected String name;
+    protected double mass;
+    protected List<Section> sections = new ArrayList<>();
+
+    public Entity() {
+        this.name = "Unknown";
+        this.mass = 0.0;
 
     }
+
+    public Entity(String name, double mass) {
+        this.name = name;
+        this.mass = mass;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
 }
