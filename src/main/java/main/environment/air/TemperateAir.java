@@ -1,8 +1,8 @@
 package main.environment.air;
 
-public class TemperateAir extends Air {
-    public static final double TOXICITY_MAX_SCORE = 84.0;
+import main.core.Section;
 
+public class TemperateAir extends Air {
     private double pollenLevel;
     private static final String[] SEASONS = {"Spring", "Summer", "Autumn", "Winter"};
     private String currentSeason = SEASONS[0];
@@ -10,27 +10,28 @@ public class TemperateAir extends Air {
     public TemperateAir() {
         super();
         this.pollenLevel = 0.0;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
-    public TemperateAir(String name, double mass, String type, double humidity,
+    public TemperateAir(String name, double mass, Section section, String type, double humidity,
                         double temperature, double oxygenLevel, double pollenLevel, String currentSeason) {
-        super(name, mass, type, humidity, temperature, oxygenLevel);
+        super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.pollenLevel = pollenLevel;
-        calculateQuality();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
         interpretQuality();
-        calculateToxicityAQ();
     }
 
     @Override
     public double calculateQuality() {
-        double airQuality = (getOxygenLevel() * 2) + (getHumidity() * 0.7) - (this.pollenLevel * 0.1);
+        double airQuality = (this.oxygenLevel * 2) + (this.humidity * 0.7) - (this.pollenLevel * 0.1);
 
         airQuality = Math.round(airQuality * 100.0) / 100.0;
-        setAirQuality(airQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 
@@ -38,9 +39,13 @@ public class TemperateAir extends Air {
     public double updateQuality() {
         double seasonPenalty = currentSeason.equalsIgnoreCase(SEASONS[0]) ? 15 : 0;
 
-        setAirQuality(seasonPenalty);
-        calculateToxicityAQ();
+        this.toxicityAQ = calculateToxicityAQ();
         return seasonPenalty;
+    }
+
+    @Override
+    public double getMaxScore() {
+        return 84.0;
     }
 
     public double getPollenLevel() {
@@ -49,7 +54,9 @@ public class TemperateAir extends Air {
 
     public void setPollenLevel(double pollenLevel) {
         this.pollenLevel = pollenLevel;
-        calculateQuality();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public String getCurrentSeason() {
@@ -58,6 +65,7 @@ public class TemperateAir extends Air {
 
     public void setCurrentSeason(String currentSeason) {
         this.currentSeason = currentSeason;
-        updateQuality();
+        this.airQuality = updateQuality();
+        interpretQuality();
     }
 }

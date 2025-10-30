@@ -18,14 +18,14 @@ public abstract class Soil extends Entity {
         QUALITY_MAP.put(70.0, "Good");
     }
 
-    private String type;
-    private double nitrogen;
-    private double waterRetention;
-    private double soilpH;
-    private double organicMatter;
-    private double soilQuality = 0.0;
-    private double blockingProbability = 0.0;
-    public String qualityStatus;
+    protected String type;
+    protected double nitrogen;
+    protected double waterRetention;
+    protected double soilpH;
+    protected double organicMatter;
+    protected double soilQuality = 0.0;
+    protected double blockingProbability = 0.0;
+    protected String qualityStatus;
 
     public Soil() {
         super();
@@ -36,10 +36,10 @@ public abstract class Soil extends Entity {
         this.organicMatter = 0.0;
     }
 
-    public Soil(String name, double mass, String type,
+    public Soil(String name, double mass, Section section, String type,
                 double nitrogen, double waterRetention,
                 double soilpH, double organicMatter) {
-        super(name, mass);
+        super(name, mass, section);
 
         this.type = type;
         this.nitrogen = nitrogen;
@@ -57,9 +57,10 @@ public abstract class Soil extends Entity {
     }
 
     public void interactWithEnvironment(Section section, int iteration) {
-       for(Plant plant : section.getPlants()) {
-       plant.grow(GROWTH_FACTOR);
-       }
+        Plant plant = section.getPlant();
+        if (plant != null && plant.isScanned()) {
+            plant.grow(GROWTH_FACTOR);
+        }
     }
 
     public String getType() {
@@ -68,8 +69,8 @@ public abstract class Soil extends Entity {
 
     public void setType(String type) {
         this.type = type;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     public double getNitrogen() {
@@ -78,8 +79,8 @@ public abstract class Soil extends Entity {
 
     public void setNitrogen(double nitrogen) {
         this.nitrogen = nitrogen;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     public double getWaterRetention() {
@@ -88,8 +89,8 @@ public abstract class Soil extends Entity {
 
     public void setWaterRetention(double waterRetention) {
         this.waterRetention = waterRetention;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     public double getSoilpH() {
@@ -98,8 +99,8 @@ public abstract class Soil extends Entity {
 
     public void setSoilpH(double soilpH) {
         this.soilpH = soilpH;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     public double getOrganicMatter() {
@@ -108,8 +109,8 @@ public abstract class Soil extends Entity {
 
     public void setOrganicMatter(double organicMatter) {
         this.organicMatter = organicMatter;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     public double getSoilQuality() {

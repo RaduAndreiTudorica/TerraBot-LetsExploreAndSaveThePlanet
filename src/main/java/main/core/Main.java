@@ -1,4 +1,4 @@
-package main;
+package main.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -25,7 +25,7 @@ public final class Main {
      * @throws IOException when files cannot be loaded.
      */
     public static void action(final String inputPath,
-                              final String outputPath) throws IOException {
+                                final String outputPath) throws IOException {
 
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();

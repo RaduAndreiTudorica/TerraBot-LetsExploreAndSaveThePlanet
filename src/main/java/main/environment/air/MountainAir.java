@@ -1,46 +1,53 @@
 package main.environment.air;
 
+import main.core.Section;
+
 public class MountainAir extends Air {
-    public static final double TOXICITY_MAX_SCORE = 78.0;
     private double altitude;
     private int numberOfHikers = 0;
 
     public MountainAir() {
         super();
         this.altitude = 0.0;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
-    public MountainAir(String name, double mass, String type, double humidity,
-                       double temperature, double oxygenLevel, double altitude) {
-        super(name, mass, type, humidity, temperature, oxygenLevel);
+    public MountainAir(String name, double mass, Section section, String type, double humidity,
+                        double temperature, double oxygenLevel, double altitude) {
+        super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.altitude = altitude;
-        calculateQuality();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
         interpretQuality();
-        calculateToxicityAQ();
     }
 
     @Override
     public double calculateQuality() {
-        double oxygenFactor = getOxygenLevel() - (this.altitude / 1000.0 * 0.5);
-        double airQuality = (oxygenFactor * 2) + (getHumidity() * 0.6);
+        double oxygenFactor = this.oxygenLevel - (this.altitude / 1000.0 * 0.5);
+        double airQuality = (oxygenFactor * 2) + (this.humidity * 0.6);
 
         airQuality = Math.round(airQuality * 100.0) / 100.0;
-        setAirQuality(airQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 
     @Override
     public double updateQuality() {
-        double newAirQuality = getAirQuality() - (this.numberOfHikers * 0.1);
+        double newAirQuality = this.airQuality - (this.numberOfHikers * 0.1);
 
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
-        setAirQuality(newAirQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return newAirQuality;
+    }
+
+    @Override
+    public double getMaxScore() {
+        return 78.0;
     }
 
     public double getAltitude() {
@@ -49,7 +56,8 @@ public class MountainAir extends Air {
 
     public void setAltitude(double altitude) {
         this.altitude = altitude;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 }

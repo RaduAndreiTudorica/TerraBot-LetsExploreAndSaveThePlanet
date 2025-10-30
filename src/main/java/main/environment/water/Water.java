@@ -28,11 +28,12 @@ public class Water extends Entity {
     private boolean isFrozen;
     private double waterQuality;
     private String qualityStatus;
+    private boolean isScanned = false;
 
     public Water() {
         super();
         this.salinity = 0.0;
-        this.pH = 7.0;
+        this.pH = 0.0;
         this.purity = 100.0;
         this.turbidity = 0;
         this.contaminantIndex = 0.0;
@@ -40,10 +41,10 @@ public class Water extends Entity {
         calculateWaterQuality();
     }
 
-    public Water(String name, double mass, String type, double salinity, double pH,
-                 double purity, int turbidity,
-                 double contaminantIndex, boolean isFrozen) {
-        super(name, mass);
+    public Water(String name, double mass, Section section, String type, double salinity, double pH,
+                    double purity, int turbidity,
+                    double contaminantIndex, boolean isFrozen) {
+        super(name, mass, section);
 
         this.type = type;
         this.salinity = salinity;
@@ -52,7 +53,7 @@ public class Water extends Entity {
         this.turbidity = turbidity;
         this.contaminantIndex = contaminantIndex;
         this.isFrozen = isFrozen;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     private double calculateWaterQuality() {
@@ -64,14 +65,17 @@ public class Water extends Entity {
         double isFrozen = this.isFrozen ? 0.0 : 1.0;
 
         double waterQuality =  (0.3 * purity_score + 0.2 * pH_score + 0.15 * salinity_score +
-                               0.1 * turbidity_score + 0.15 * contaminant_score + 0.2 * isFrozen) * 100.0;
+                                0.1 * turbidity_score + 0.15 * contaminant_score + 0.2 * isFrozen) * 100.0;
 
-        setWaterQuality(waterQuality);
-        this.qualityStatus = QUALITY_MAP.get(waterQuality);
+        this.qualityStatus = QUALITY_MAP.floorEntry(this.waterQuality).getValue();
         return waterQuality;
     }
 
-    public void interactWithSection(Section section, int iteration) {
+    public void interactWithEnvironment(Section section, int iteration) {
+        if(!isScanned()) {
+            return;
+        }
+
         if(iteration % 2 == 0) {
             Soil soil = section.getSoil();
             if(soil != null) {
@@ -86,12 +90,18 @@ public class Water extends Entity {
             }
         }
 
-        for(Plant plant : section.getPlants()) {
-            plant.grow(0.2);
+        Plant plant = section.getPlant();
+        if(plant != null) {
+            plant.grow(GROWTH_FACTOR);
         }
     }
 
-
+    public void markScanned() {
+        this.isScanned = true;
+    }
+    public boolean isScanned() {
+        return this.isScanned;
+    }
 
     public double getSalinity() {
         return this.salinity;
@@ -107,7 +117,7 @@ public class Water extends Entity {
 
     public void setSalinity(double salinity) {
         this.salinity = salinity;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     public double getPH() {
@@ -116,7 +126,7 @@ public class Water extends Entity {
 
     public void setPH(double pH) {
         this.pH = pH;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     public double getPurity() {
@@ -125,7 +135,7 @@ public class Water extends Entity {
 
     public void setPurity(double purity) {
         this.purity = purity;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     public int getTurbidity() {
@@ -134,7 +144,7 @@ public class Water extends Entity {
 
     public void setTurbidity(int turbidity) {
         this.turbidity = turbidity;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     public double getContaminantIndex() {
@@ -143,7 +153,7 @@ public class Water extends Entity {
 
     public void setContaminantIndex(double contaminantIndex) {
         this.contaminantIndex = contaminantIndex;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     public boolean isFrozen() {
@@ -152,7 +162,7 @@ public class Water extends Entity {
 
     public void setFrozen(boolean frozen) {
         isFrozen = frozen;
-        calculateWaterQuality();
+        this.waterQuality = calculateWaterQuality();
     }
 
     public double getWaterQuality() {

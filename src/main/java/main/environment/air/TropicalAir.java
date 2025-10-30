@@ -1,48 +1,54 @@
 package main.environment.air;
 
-public class TropicalAir extends Air {
-    public static final double TOXICITY_MAX_SCORE = 82.0;
+import main.core.Section;
 
+public class TropicalAir extends Air {
     private double co2Level;
     private double rainfallAmount = 0.0;
 
     public TropicalAir() {
         super();
         this.co2Level = 0.0;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
-    public TropicalAir(String name, double mass, String type, double humidity,
-                       double temperature, double oxygenLevel, double co2Level) {
-        super(name, mass, type, humidity, temperature, oxygenLevel);
+    public TropicalAir(String name, double mass, Section section, String type, double humidity,
+                        double temperature, double oxygenLevel, double co2Level) {
+        super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.co2Level = co2Level;
 
-        calculateQuality();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
         interpretQuality();
-        calculateToxicityAQ();
     }
 
     @Override
     public double calculateQuality() {
-        double airQuality = (getOxygenLevel() * 2) + (getHumidity() * 0.5) -
+        double airQuality = (this.oxygenLevel * 2) + (this.humidity * 0.5) -
                 (this.co2Level * 0.01);
 
         airQuality = Math.round(airQuality * 100.0) / 100.0;
-        setAirQuality(airQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 
     @Override
     public double updateQuality() {
-        double newAirQuality = getAirQuality() + (this.rainfallAmount * 0.3);
+        double newAirQuality = this.airQuality + (this.rainfallAmount * 0.3);
 
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
-        setAirQuality(newAirQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return newAirQuality;
+    }
+
+    @Override
+    double getMaxScore() {
+        return 82.0;
     }
 
     public double getCo2Level() {
@@ -51,18 +57,20 @@ public class TropicalAir extends Air {
 
     public void setCo2Level(double co2Level) {
         this.co2Level = co2Level;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public double getRainfallAmount() {
         return this.rainfallAmount;
     }
 
-    public void setRainfallAmount(double rainfallAmount) {
+    public void applyRainfall(double rainfallAmount) {
         this.rainfallAmount = rainfallAmount;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
 }

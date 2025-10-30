@@ -1,43 +1,43 @@
 package main.environment.soil;
 
+import main.core.Section;
+
 public class GrasslandSoil extends Soil {
     private double rootDensity;
 
     public GrasslandSoil() {
         super();
         this.rootDensity = 0.0;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
-    public GrasslandSoil(String name, double mass, double nitrogen,
-                         double waterRetention, double soilpH,
-                         double organicMatter, double rootDensity) {
-        super(name, mass, "Grassland",
-              nitrogen, waterRetention,
-              soilpH, organicMatter);
+    public GrasslandSoil(String name, double mass, Section section, double nitrogen,
+                            double waterRetention, double soilpH,
+                            double organicMatter, double rootDensity) {
+        super(name, mass, section, "Grassland",
+                nitrogen, waterRetention,
+                soilpH, organicMatter);
         this.rootDensity = rootDensity;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     @Override
     public double calculateQuality() {
-        double quality = (getNitrogen() * 1.3) + (getOrganicMatter() * 1.5) +
+        double quality = (this.nitrogen * 1.3) + (this.organicMatter * 1.5) +
                 (this.rootDensity * 0.8);
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
-        setSoilQuality(normalizedQuality);
         interpretQuality();
         return normalizedQuality;
     }
 
     @Override
     public double calculateBlockingProbability() {
-        double probability = ((50 - this.rootDensity) + (getWaterRetention() * 0.5)) / 75 * 100;
+        double probability = ((50 - this.rootDensity) + (this.waterRetention * 0.5)) / 75 * 100;
 
-        setBlockingProbability(probability);
         return probability;
     }
 
@@ -47,7 +47,7 @@ public class GrasslandSoil extends Soil {
 
     public void setRootDensity(double rootDensity) {
         this.rootDensity = rootDensity;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 }
