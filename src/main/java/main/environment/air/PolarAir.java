@@ -1,7 +1,8 @@
 package main.environment.air;
 
+import main.core.Section;
+
 public class PolarAir extends Air {
-    public static final double TOXICITY_MAX_SCORE = 142.0;
 
     private double iceCrystalConcentration;
     private double windSpeed = 0.0;
@@ -9,40 +10,46 @@ public class PolarAir extends Air {
     public PolarAir() {
         super();
         this.iceCrystalConcentration = 0.0;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
-    public PolarAir(String name, double mass, String type, double humidity,
+    public PolarAir(String name, double mass, Section section, String type, double humidity,
                     double temperature, double oxygenLevel, double iceCrystalConcentration) {
-        super(name, mass, type, humidity, temperature, oxygenLevel);
+        super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.iceCrystalConcentration = iceCrystalConcentration;
 
-        calculateQuality();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
         interpretQuality();
-        calculateToxicityAQ();
     }
 
     @Override
     public double calculateQuality() {
-        double airQuality = (getOxygenLevel() * 2) + (100 - Math.abs(getTemperature())) -
+        double airQuality = (this.oxygenLevel * 2) + (100 - Math.abs(getTemperature())) -
                 (this.iceCrystalConcentration * 0.05);
 
         airQuality = Math.round(airQuality * 100.0) / 100.0;
-        setAirQuality(airQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 
     @Override
     public double updateQuality() {
-        double newAirQuality = getAirQuality() - (this.windSpeed * 0.02);
+        double newAirQuality = this.airQuality - (this.windSpeed * 0.02);
 
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
-        setAirQuality(newAirQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();;
         return newAirQuality;
+    }
+
+    @Override
+    double getMaxScore() {
+        return 142.0;
     }
 
     public double getIceCrystalConcentration() {
@@ -51,8 +58,9 @@ public class PolarAir extends Air {
 
     public void setIceCrystalConcentration(double iceCrystalConcentration) {
         this.iceCrystalConcentration = iceCrystalConcentration;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public double getWindSpeed() {
@@ -61,7 +69,8 @@ public class PolarAir extends Air {
 
     public void setWindSpeed(double windSpeed) {
         this.windSpeed = windSpeed;
-        updateQuality();
+        this.airQuality = updateQuality();
+        interpretQuality();
     }
 
 }

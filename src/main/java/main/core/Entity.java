@@ -1,11 +1,9 @@
 package main.core;
 
-import java.util.*;
-
 public abstract class Entity {
     protected String name;
     protected double mass;
-    protected List<Section> sections = new ArrayList<>();
+    protected Section section;
 
     public Entity() {
         this.name = "Unknown";
@@ -13,17 +11,30 @@ public abstract class Entity {
 
     }
 
-    public Entity(String name, double mass) {
+    public Entity(String name, double mass, Section section) {
         this.name = name;
+        this.mass = mass;
+        this.section = section;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getMass() {
+        return mass;
+    }
+
+    public void setMass(double mass) {
         this.mass = mass;
     }
 
-    public void addSection(Section section) {
-        sections.add(section);
+    public Section getSection() {
+        return section;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public void setSection(Section section) {
+        this.section = section;
     }
 
 }

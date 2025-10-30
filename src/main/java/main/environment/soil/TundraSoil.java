@@ -1,34 +1,35 @@
 package main.environment.soil;
 
+import main.core.Section;
+
 public class TundraSoil extends Soil {
     private double permafrostDepth;
 
     public TundraSoil() {
         super();
         this.permafrostDepth = 0.0;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
-    public TundraSoil(String name, double mass, double nitrogen,
-                      double waterRetention, double soilpH,
-                      double organicMatter, double permafrostDepth) {
-        super(name, mass, "Tundra",
-              nitrogen, waterRetention,
-              soilpH, organicMatter);
+    public TundraSoil(String name, double mass, Section section, double nitrogen,
+                        double waterRetention, double soilpH,
+                        double organicMatter, double permafrostDepth) {
+        super(name, mass, section, "Tundra",
+                nitrogen, waterRetention,
+                soilpH, organicMatter);
         this.permafrostDepth = permafrostDepth;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     @Override
     public double calculateQuality() {
-        double quality = (getNitrogen() * 0.7) + (getOrganicMatter() * 0.5) -
-                         (this.permafrostDepth * 1.5);
+        double quality = (this.nitrogen * 0.7) + (this.organicMatter * 0.5) -
+                (this.permafrostDepth * 1.5);
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
-        setSoilQuality(normalizedQuality);
         interpretQuality();
         return normalizedQuality;
     }
@@ -37,7 +38,6 @@ public class TundraSoil extends Soil {
     public double calculateBlockingProbability() {
         double probability = (50 - this.permafrostDepth) / 50 * 100;
 
-        setBlockingProbability(probability);
         return probability;
     }
 
@@ -47,7 +47,7 @@ public class TundraSoil extends Soil {
 
     public void setPermafrostDepth(double permafrostDepth) {
         this.permafrostDepth = permafrostDepth;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 }

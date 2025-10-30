@@ -1,8 +1,8 @@
 package main.environment.plant;
 
 import main.core.Entity;
-import main.environment.soil.Soil;
-import main.environment.water.Water;
+import main.core.Section;
+import main.environment.air.Air;
 
 import java.util.*;
 
@@ -36,38 +36,70 @@ public class Plant extends Entity {
 
     private String type;
     private String status;
-    private int plant_possibility;
+    private int plantPossibility;
     private double growthLevel;
+    private double oxygenProduction;
+    private boolean isScanned = false;
 
     public Plant() {
         super();
         this.type = "Unknown";
         this.status = "young";
-        this.plant_possibility = 0;
+        this.plantPossibility = 0;
         this.growthLevel = 0.0;
     }
 
-    public Plant(String name, double mass, String type) {
-        super(name, mass);
+    public Plant(String name, double mass, Section section, String type) {
+        super(name, mass, section);
 
         this.type = type;
         this.status = "young";
-        this.plant_possibility = BLOCKING_PROBABILITY_MAP.getOrDefault(type, 0);
+        this.plantPossibility = BLOCKING_PROBABILITY_MAP.getOrDefault(type, 0);
         this.growthLevel = 0.0;
+        calculateOxygenProduction();
     }
 
-    public float getOxygenProduction() {
+    public float calculateOxygenProduction() {
         float baseOxygen =  BASE_OXYGEN_MAP.getOrDefault(this.type, 0.0f);
         float maturityBonus = MATURITY_BONUS_MAP.getOrDefault(this.status, 0.0f);
 
+        setOxygenProduction(baseOxygen + maturityBonus);
         return baseOxygen + maturityBonus;
     }
 
+    public void interactWithEnvironment(Section section, int iteration) {
+        Air air = section.getAir();
+        if (air != null) {
+            double newOxygenLevel = air.getOxygenLevel() + this.oxygenProduction;
+            air.setOxygenLevel(newOxygenLevel);
+        }
+
+    }
+
+    public void grow(double growthIncrement) {
+        this.growthLevel += growthIncrement;
+
+        if(this.growthLevel > 1.0) {
+            this.growthLevel = 0.0;
+            int currentStageIndex = Arrays.asList(MATURITY_STAGES).indexOf(this.status);
+            if (currentStageIndex < MATURITY_STAGES.length - 1) {
+                this.status = MATURITY_STAGES[currentStageIndex + 1];
+            }
+        }
+    }
+
     public double getBLockingProbability() {
-        return this.plant_possibility / 100.0;
+        return this.plantPossibility / 100.0;
     }
     public String getType() {
         return this.type;
+    }
+
+    public void markScanned() {
+        this.isScanned = true;
+    }
+    public boolean isScanned() {
+        return this.isScanned;
     }
 
     public void setType(String type) {
@@ -82,8 +114,16 @@ public class Plant extends Entity {
         this.status = status;
     }
 
-    public int getPlant_possibility() {
-        return this.plant_possibility;
+    public int getPlantPossibility() {
+        return this.plantPossibility;
+    }
+
+    public double getOxygenProduction() {
+        return this.oxygenProduction;
+    }
+
+    public void setOxygenProduction(double oxygenProduction) {
+        this.oxygenProduction = oxygenProduction;
     }
 
     public void beEaten() {
@@ -94,16 +134,5 @@ public class Plant extends Entity {
         return this.status.equals("dead");
     }
 
-    public void grow(double growthIncrement) {
-        this.growthLevel += growthIncrement;
-
-        if(this.growthLevel > 1.0) {
-            this.growthLevel = 0.0;
-            int currentStageIndex = Arrays.asList(MATURITY_STAGES).indexOf(this.status);
-            if (currentStageIndex < MATURITY_STAGES.length - 1) {
-                this.status = MATURITY_STAGES[currentStageIndex + 1];
-            }
-        }
-    }
 }
 

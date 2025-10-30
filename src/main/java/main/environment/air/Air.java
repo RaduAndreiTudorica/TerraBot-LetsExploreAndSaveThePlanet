@@ -1,13 +1,13 @@
 package main.environment.air;
 
 import main.core.Entity;
+import main.core.Section;
+import main.environment.animal.Animal;
 
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public abstract class Air extends Entity {
-    public static final double TOXICITY_MAX_SCORE = 100.0;
-
     private static final NavigableMap<Double, String> QUALITY_MAP = new TreeMap<>();
 
     static {
@@ -16,13 +16,13 @@ public abstract class Air extends Entity {
         QUALITY_MAP.put(70.0, "Good");
     }
 
-    private String type;
-    private double humidity;
-    private double temperature;
-    private double oxygenLevel;
-    private double toxicityAQ;
-    private double airQuality;
-    private String qualityStatus;
+    protected String type;
+    protected double humidity;
+    protected double temperature;
+    protected double oxygenLevel;
+    protected double toxicityAQ;
+    protected double airQuality;
+    protected String qualityStatus;
 
     public Air() {
         super();
@@ -34,11 +34,11 @@ public abstract class Air extends Entity {
         this.airQuality = 0.0;
     }
 
-    public Air(String name, double mass,
-               String type, double humidity, double temperature,
-               double oxygenLevel) {
+    public Air(String name, double mass, Section section,
+                String type, double humidity, double temperature,
+                double oxygenLevel) {
 
-        super(name, mass);
+        super(name, mass, section);
         this.type = type;
         this.humidity = humidity;
         this.temperature = temperature;
@@ -47,17 +47,26 @@ public abstract class Air extends Entity {
 
     abstract public double calculateQuality();
     abstract public double updateQuality();
+    abstract double getMaxScore();
 
     public void interpretQuality() {
         this.qualityStatus = QUALITY_MAP.floorEntry(this.airQuality).getValue();
     }
 
+    public void interactWithEnvironment(Section section, int iteration) {
+        Animal animal = section.getAnimal();
+            if (animal != null && animal.isScanned()) {
+                if(this.toxicityAQ > 60.0) {
+                    animal.setStatus("Sick");
+                }
+            }
+    }
+
     public double calculateToxicityAQ() {
-        double toxicityAQ = 100 * (1 - getAirQuality() / TOXICITY_MAX_SCORE);
+        double toxicityAQ = 100 * (1 - getAirQuality() / getMaxScore());
 
         toxicityAQ = Math.round(toxicityAQ * 100.0) / 100.0;
 
-        this.toxicityAQ = toxicityAQ;
         return toxicityAQ;
     }
 
@@ -66,8 +75,9 @@ public abstract class Air extends Entity {
     }
     public void setHumidity(double humidity) {
         this.humidity = humidity;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public double getTemperature() {
@@ -75,8 +85,9 @@ public abstract class Air extends Entity {
     }
     public void setTemperature(double temperature) {
         this.temperature = temperature;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();;
+        interpretQuality();
     }
 
     public double getOxygenLevel() {
@@ -84,8 +95,9 @@ public abstract class Air extends Entity {
     }
     public void setOxygenLevel(double oxygenLevel) {
         this.oxygenLevel = oxygenLevel;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public double getToxicityAQ() {

@@ -1,34 +1,35 @@
 package main.environment.soil;
 
+import main.core.Section;
+
 public class SwampSoil extends Soil {
     private double waterLogging;
 
     public SwampSoil() {
         super();
         this.waterLogging = 0.0;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
-    public SwampSoil(String name, double mass, double nitrogen,
-                     double waterRetention, double soilpH,
-                     double organicMatter, double waterLogging) {
-        super(name, mass, "Swamp",
-              nitrogen, waterRetention,
-              soilpH, organicMatter);
+    public SwampSoil(String name, double mass, Section section, double nitrogen,
+                        double waterRetention, double soilpH,
+                        double organicMatter, double waterLogging) {
+        super(name, mass, section, "Swamp",
+                nitrogen, waterRetention,
+                soilpH, organicMatter);
         this.waterLogging = waterLogging;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
     @Override
     public double calculateQuality() {
-        double quality = (getNitrogen() * 1.1) + (getOrganicMatter() * 2.2) -
+        double quality = (this.nitrogen * 1.1) + (this.organicMatter * 2.2) -
                 (this.waterLogging * 5);
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
-        setSoilQuality(normalizedQuality);
         interpretQuality();
         return normalizedQuality;
     }
@@ -37,7 +38,6 @@ public class SwampSoil extends Soil {
     public double calculateBlockingProbability() {
         double probability = this.waterLogging * 10;
 
-        setBlockingProbability(probability);
         return probability;
     }
 
@@ -45,10 +45,10 @@ public class SwampSoil extends Soil {
         return this.waterLogging;
     }
 
-    public void setWatterLogging(double watterLogging) {
+    public void setWaterLogging(double watterLogging) {
         this.waterLogging = watterLogging;
-        calculateQuality();
-        calculateBlockingProbability();
+        this.soilQuality = calculateQuality();
+        this.blockingProbability = calculateBlockingProbability();
     }
 
 }

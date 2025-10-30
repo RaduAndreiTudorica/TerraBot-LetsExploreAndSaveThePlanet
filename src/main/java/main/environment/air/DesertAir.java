@@ -1,7 +1,7 @@
 package main.environment.air;
+import main.core.Section;
 
 public class DesertAir extends Air{
-    public static final double TOXICITY_MAX_SCORE = 65.0;
 
     private double dustParticles;
     private boolean isDesertStorm = false;
@@ -9,40 +9,45 @@ public class DesertAir extends Air{
     public DesertAir() {
         super();
         this.dustParticles = 0.0;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
-    public DesertAir(String name, double mass, String type, double humidity,
-                     double temperature, double oxygenLevel, double dustParticles) {
-        super(name, mass, type, humidity, temperature, oxygenLevel);
+    public DesertAir(String name, double mass, Section section, String type, double humidity,
+                        double temperature, double oxygenLevel, double dustParticles) {
+        super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.dustParticles = dustParticles;
-        calculateQuality();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
         interpretQuality();
-        calculateToxicityAQ();
     }
 
     @Override
     public double calculateQuality() {
-        double airQuality = (getOxygenLevel() * 2) -
-                (this.dustParticles * 0.2) - (getTemperature() * 0.3);
+        double airQuality = (this.oxygenLevel * 2) -
+                (this.dustParticles * 0.2) - (this.temperature * 0.3);
 
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
-        setAirQuality(airQuality);
-        calculateToxicityAQ();
+        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 
     @Override
     public double updateQuality() {
-        double newAirQuality = getAirQuality() - (this.isDesertStorm ? 30 : 0);
+        double newAirQuality = this.airQuality - (this.isDesertStorm ? 30 : 0);
 
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
-        setAirQuality(newAirQuality);
-        calculateToxicityAQ();
+
+        this.toxicityAQ = calculateToxicityAQ();
         return newAirQuality;
+    }
+
+    @Override
+    public double getMaxScore() {
+        return 65.0;
     }
 
     public double getDustParticles() {
@@ -51,8 +56,9 @@ public class DesertAir extends Air{
 
     public void setDustParticles(double dustParticles) {
         this.dustParticles = dustParticles;
-        calculateQuality();
-        calculateToxicityAQ();
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public boolean isDesertStorm() {
@@ -61,6 +67,7 @@ public class DesertAir extends Air{
 
     public void setDesertStorm(boolean isDesertStorm) {
         this.isDesertStorm = isDesertStorm;
-        updateQuality();
+        this.airQuality = updateQuality();
+        interpretQuality();
     }
 }
