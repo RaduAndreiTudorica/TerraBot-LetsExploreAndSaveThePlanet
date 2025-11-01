@@ -69,22 +69,28 @@ public class Plant extends Entity {
 
     public void interactWithEnvironment(Section section, int iteration) {
         Air air = section.getAir();
-        if (air != null) {
-            double newOxygenLevel = air.getOxygenLevel() + this.oxygenProduction;
-            air.setOxygenLevel(newOxygenLevel);
+        if(air == null || isDead()) {
+            return;
         }
 
-    }
+        double produced = this.oxygenProduction;
+        air.setOxygenLevel(air.getOxygenLevel() + produced);
 
-    public void grow(double growthIncrement) {
-        this.growthLevel += growthIncrement;
+        this.growthLevel += produced;
 
         if(this.growthLevel > 1.0) {
             this.growthLevel = 0.0;
-            int currentStageIndex = Arrays.asList(MATURITY_STAGES).indexOf(this.status);
-            if (currentStageIndex < MATURITY_STAGES.length - 1) {
-                this.status = MATURITY_STAGES[currentStageIndex + 1];
+            advancematurity();
+            if(!isDead()) {
+                this.oxygenProduction = calculateOxygenProduction();
             }
+        }
+    }
+
+    private void advancematurity() {
+        int index = Arrays.asList(MATURITY_STAGES).indexOf(this.status);
+        if(index < MATURITY_STAGES.length - 1) {
+            this.status = MATURITY_STAGES[index + 1];
         }
     }
 
