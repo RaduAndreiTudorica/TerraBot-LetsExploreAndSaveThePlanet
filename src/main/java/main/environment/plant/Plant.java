@@ -94,6 +94,13 @@ public class Plant extends Entity {
         }
     }
 
+    public void addGrowthLevel(double growthLevel) {
+        if(isDead()) {
+            return;
+        }
+        this.growthLevel += growthLevel;
+    }
+
     public double getBLockingProbability() {
         return this.plantPossibility / 100.0;
     }

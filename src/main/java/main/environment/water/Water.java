@@ -92,7 +92,7 @@ public class Water extends Entity {
 
         Plant plant = section.getPlant();
         if(plant != null) {
-            plant.grow(GROWTH_FACTOR);
+            plant.addGrowthLevel(GROWTH_FACTOR);
         }
     }
 
