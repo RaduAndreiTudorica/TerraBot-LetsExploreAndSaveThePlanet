@@ -104,12 +104,16 @@ public class Animal extends Entity {
     }
 
     public Section findBestSectionToMove(List<Section> neighbors) {
-        Section Priority1 = null; // plant and water
+        Section Priority1 = null;
         Section Priority2_Plant = null;
         Section Priority2_Water = null;
         Section Priority3_Fallback = null;
 
         for(Section neighbor : neighbors) {
+            if (neighbor == null) {
+                continue;
+            }
+
             if(Priority3_Fallback == null) {
                 Priority3_Fallback = neighbor;
             }
