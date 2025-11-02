@@ -1,5 +1,6 @@
 package main.environment.air;
 
+import fileio.CommandInput;
 import main.core.Section;
 
 public class PolarAir extends Air {
@@ -41,7 +42,9 @@ public class PolarAir extends Air {
     public double updateQuality() {
         double newAirQuality = this.airQuality - (this.windSpeed * 0.02);
 
-        newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
+        airQuality = Math.max(0, Math.min(100, airQuality));
+        airQuality = Math.round(airQuality * 100.0) / 100.0;
+
 
         this.toxicityAQ = calculateToxicityAQ();;
         return newAirQuality;
@@ -50,6 +53,15 @@ public class PolarAir extends Air {
     @Override
     double getMaxScore() {
         return 142.0;
+    }
+
+    @Override
+    public boolean applyWeatherEvent(CommandInput command) {
+        if ("polarStorm".equals(command.type)) {
+            this.windSpeed = command.windSpeed;
+            return true;
+        }
+        return false;
     }
 
     public double getIceCrystalConcentration() {

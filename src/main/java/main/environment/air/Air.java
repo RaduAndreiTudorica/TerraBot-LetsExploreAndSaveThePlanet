@@ -1,11 +1,11 @@
 package main.environment.air;
 
+import fileio.CommandInput;
 import main.core.Entity;
 import main.core.Section;
 import main.environment.animal.Animal;
 
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public abstract class Air extends Entity {
     private static final NavigableMap<Double, String> QUALITY_MAP = new TreeMap<>();
@@ -48,6 +48,7 @@ public abstract class Air extends Entity {
     abstract public double calculateQuality();
     abstract public double updateQuality();
     abstract double getMaxScore();
+    public abstract boolean applyWeatherEvent(CommandInput command);
 
     public void interpretQuality() {
         this.qualityStatus = QUALITY_MAP.floorEntry(this.airQuality).getValue();
@@ -114,5 +115,9 @@ public abstract class Air extends Entity {
 
     void setAirQuality(double airQuality) {
         this.airQuality = airQuality;
+    }
+
+    public  String getQualityStatus() {
+        return this.qualityStatus;
     }
 }

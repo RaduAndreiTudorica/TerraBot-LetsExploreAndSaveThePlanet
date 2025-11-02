@@ -93,7 +93,7 @@ public class Animal extends Entity {
     }
 
     public void interactWithEnvironment(Section section) {
-        if("well-fed".equalsIgnoreCase(status)) {
+        if(!"well-fed".equalsIgnoreCase(status)) {
             return;
         }
 
@@ -101,6 +101,51 @@ public class Animal extends Entity {
         if (water != null && water.isScanned()) {
             water.setContaminantIndex(water.getContaminantIndex() + 0.3);
         }
+    }
+
+    public Section findBestSectionToMove(List<Section> neighbors) {
+        Section Priority1 = null; // plant and water
+        Section Priority2_Plant = null;
+        Section Priority2_Water = null;
+        Section Priority3_Fallback = null;
+
+        for(Section neighbor : neighbors) {
+            if(Priority3_Fallback == null) {
+                Priority3_Fallback = neighbor;
+            }
+
+            Plant plant = neighbor.getPlant();
+            Water water = neighbor.getWater();
+
+            boolean hasScannedPlant = (plant != null && plant.isScanned());
+            boolean hasScannedWater = (water != null && water.isScanned());
+
+            if(hasScannedPlant && hasScannedWater) {
+                if(Priority1 == null || water.getWaterQuality() > Priority1.getWater().getWaterQuality()) {
+                    Priority1 = neighbor;
+                }
+            } else if(hasScannedPlant) {
+                Priority2_Plant = neighbor;
+            } else if(hasScannedWater) {
+                if(Priority2_Water == null || water.getWaterQuality() > Priority2_Water.getWater().getWaterQuality()) {
+                    Priority2_Water = neighbor;
+                }
+            }
+        }
+
+        if(Priority1 != null) {
+            return Priority1;
+        }
+
+        if(Priority2_Plant != null) {
+            return  Priority2_Plant;
+        }
+
+        if(Priority2_Water != null) {
+            return Priority2_Water;
+        }
+
+        return Priority3_Fallback;
     }
 
     public void markScanned() {
@@ -132,6 +177,10 @@ public class Animal extends Entity {
 
     public void setPossibilityToAttack(double possibilityToAttack) {
         this.possibilityToAttack = possibilityToAttack;
+    }
+
+    public double getAttackProbability() {
+        return this.attackProbability;
     }
 
 }

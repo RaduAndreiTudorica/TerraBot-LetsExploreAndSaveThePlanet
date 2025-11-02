@@ -1,5 +1,7 @@
 package main.environment.air;
+
 import main.core.Section;
+import fileio.CommandInput;
 
 public class DesertAir extends Air{
 
@@ -29,6 +31,7 @@ public class DesertAir extends Air{
         double airQuality = (this.oxygenLevel * 2) -
                 (this.dustParticles * 0.2) - (this.temperature * 0.3);
 
+        airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
         this.toxicityAQ = calculateToxicityAQ();
@@ -48,6 +51,15 @@ public class DesertAir extends Air{
     @Override
     public double getMaxScore() {
         return 65.0;
+    }
+
+    @Override
+    public boolean applyWeatherEvent(CommandInput command) {
+        if ("desertStorm".equals(command.type)) {
+            this.isDesertStorm = command.desertStorm;
+            return true;
+        }
+        return false;
     }
 
     public double getDustParticles() {

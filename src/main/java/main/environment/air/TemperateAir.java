@@ -1,5 +1,6 @@
 package main.environment.air;
 
+import fileio.CommandInput;
 import main.core.Section;
 
 public class TemperateAir extends Air {
@@ -16,7 +17,7 @@ public class TemperateAir extends Air {
     }
 
     public TemperateAir(String name, double mass, Section section, String type, double humidity,
-                        double temperature, double oxygenLevel, double pollenLevel, String currentSeason) {
+                        double temperature, double oxygenLevel, double pollenLevel) {
         super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.pollenLevel = pollenLevel;
@@ -29,7 +30,9 @@ public class TemperateAir extends Air {
     public double calculateQuality() {
         double airQuality = (this.oxygenLevel * 2) + (this.humidity * 0.7) - (this.pollenLevel * 0.1);
 
+        airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
+
 
         this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
@@ -46,6 +49,15 @@ public class TemperateAir extends Air {
     @Override
     public double getMaxScore() {
         return 84.0;
+    }
+
+    @Override
+    public boolean applyWeatherEvent(CommandInput command) {
+        if ("newSeason".equals(command.type)) {
+            this.currentSeason = command.season;
+            return true;
+        }
+        return false;
     }
 
     public double getPollenLevel() {

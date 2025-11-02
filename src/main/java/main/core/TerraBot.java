@@ -1,5 +1,10 @@
 package main.core;
 
+import main.environment.air.Air;
+import main.environment.animal.Animal;
+import main.environment.plant.Plant;
+import main.environment.soil.Soil;
+
 import java.util.*;
 
 public class TerraBot {
@@ -9,11 +14,69 @@ public class TerraBot {
     private boolean isCharging = false;
     private int chargeEndTimestamp = 0;
 
-    private Map<String, List<String>> knowledgeBase = new HashMap<>();
+    private Map<String, List<String>> knowledgeBase = new LinkedHashMap<>();
     private Map<String, Object> inventory = new HashMap<>();
 
     public TerraBot(int initialEnergy) {
         this.energy = initialEnergy;
+    }
+
+    public Section findBestSectionToMove(List<Section> neighbors) {
+        Section bestSection = null;
+        int minScore = Integer.MAX_VALUE;
+
+        for (Section neighbor : neighbors) {
+            if(neighbor == null) {
+                continue;
+            }
+
+            int score = calculateMoveScore(neighbor);
+            if(score < minScore) {
+                minScore = score;
+                bestSection = neighbor;
+            }
+        }
+        return bestSection;
+    }
+
+    public int calculateMoveScore(Section section) {
+        if(section == null) {
+            return Integer.MAX_VALUE;
+        }
+
+        double sum = 0;
+        int count = 0;
+
+        Soil soil = section.getSoil();
+        if(soil != null) {
+            sum += soil.getBlockingProbability();
+            count++;
+        }
+
+        Air air = section.getAir();
+        if(air != null) {
+            sum += air.getToxicityAQ();
+            count++;
+        }
+
+        Animal animal = section.getAnimal();
+        if(animal != null) {
+            sum += animal.getAttackProbability();
+            count++;
+        }
+
+        Plant plant = section.getPlant();
+        if(plant != null) {
+            sum += plant.getBLockingProbability();
+            count++;
+        }
+
+        if(count == 0) {
+            return 0;
+        }
+
+        double mean = Math.abs(sum / count);
+        return (int) Math.round(mean);
     }
 
     public int getEnergy() {
@@ -28,7 +91,11 @@ public class TerraBot {
         this.energy += amount;
     }
 
-    public boolean isCharging() {
+    public boolean isCharging(int currentTimestamp) {
+        if(isCharging && currentTimestamp >= this.chargeEndTimestamp) {
+            isCharging = false;
+            chargeEndTimestamp = 0;
+        }
         return isCharging;
     }
 
@@ -36,13 +103,21 @@ public class TerraBot {
         return chargeEndTimestamp;
     }
 
-    public void startCharging() {
+    public void startCharging(int currentTimestamp, int timeToCharge) {
         this.isCharging = true;
-        this.chargeEndTimestamp = 0;
+        this.chargeEndTimestamp = currentTimestamp + timeToCharge;
     }
     public void stopCharging() {
         this.isCharging = false;
         this.chargeEndTimestamp = 0;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    public Section getSection() {
+        return section;
     }
 
     public void learnFact(String topic, String fact) {
