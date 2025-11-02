@@ -20,7 +20,7 @@ public class Terrain {
     private void initializeSections() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Section section = new Section(x, y);
+                this.map[x][y] = new Section(x, y);
             }
         }
     }

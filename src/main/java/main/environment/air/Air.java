@@ -4,6 +4,7 @@ import fileio.CommandInput;
 import main.core.Entity;
 import main.core.Section;
 import main.environment.animal.Animal;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.*;
 
@@ -20,8 +21,11 @@ public abstract class Air extends Entity {
     protected double humidity;
     protected double temperature;
     protected double oxygenLevel;
+    @JsonIgnore
     protected double toxicityAQ;
+    @JsonIgnore
     protected double airQuality;
+    @JsonIgnore
     protected String qualityStatus;
 
     public Air() {
@@ -47,6 +51,7 @@ public abstract class Air extends Entity {
 
     abstract public double calculateQuality();
     abstract public double updateQuality();
+    @JsonIgnore
     abstract double getMaxScore();
     public abstract boolean applyWeatherEvent(CommandInput command);
 
@@ -119,5 +124,9 @@ public abstract class Air extends Entity {
 
     public  String getQualityStatus() {
         return this.qualityStatus;
+    }
+
+    public String getType() {
+        return this.type;
     }
 }
