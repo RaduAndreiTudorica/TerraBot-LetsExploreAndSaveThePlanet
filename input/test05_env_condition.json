@@ -201,7 +201,7 @@
       }
     }
   ],
-"commands": [
+  "commands": [
     {
       "command": "printEnvConditions",
       "timestamp": 1

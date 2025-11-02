@@ -2,7 +2,7 @@
   "simulationParams": [
     {
       "territoryDim": "5x5",
-      "energyPoints": 900,
+      "energyPoints": 5000,
       "territorySectionParams": {
         "soil": [
           {
@@ -147,50 +147,82 @@
         ],
         "air": [
           {
-            "type": "TemperateAir",
-            "name": "Spring Air",
-            "mass": 900000,
-            "humidity": 60,
-            "temperature": 15,
-            "oxygenLevel": 20,
-            "pollenLevel": 11.0,
+            "type": "TropicalAir",
+            "name": "Humid Tropical Air",
+            "mass": 950000,
+            "humidity": 85,
+            "temperature": 30,
+            "oxygenLevel": 21,
+            "co2Level": 0.04,
             "sections": [
               { "x": 0, "y": 0 },
               { "x": 0, "y": 1 },
               { "x": 0, "y": 2 },
               { "x": 1, "y": 0 },
-              { "x": 1, "y": 1 },
+              { "x": 1, "y": 1 }
+            ]
+          },
+          {
+            "type": "TemperateAir",
+            "name": "Mild Spring Air",
+            "mass": 900000,
+            "humidity": 60,
+            "temperature": 18,
+            "oxygenLevel": 20,
+            "pollenLevel": 8.0,
+            "sections": [
+              { "x": 0, "y": 3 },
+              { "x": 0, "y": 4 },
               { "x": 1, "y": 2 },
-              { "x": 2, "y": 0 },
-              { "x": 2, "y": 1 },
-              { "x": 2, "y": 2 }
+              { "x": 1, "y": 3 },
+              { "x": 1, "y": 4 }
             ]
           },
           {
             "type": "PolarAir",
-            "name": "Cold Arctic Air",
+            "name": "Cold Polar Air",
             "mass": 1200000,
             "humidity": 70,
             "temperature": -5,
             "oxygenLevel": 19,
-            "iceCrystalConcentration": 3.0,
+            "iceCrystalConcentration": 5.0,
             "sections": [
-              { "x": 0, "y": 3 },
-              { "x": 0, "y": 4 },
-              { "x": 1, "y": 3 },
-              { "x": 1, "y": 4 },
               { "x": 2, "y": 3 },
               { "x": 2, "y": 4 },
-              { "x": 3, "y": 0 },
-              { "x": 3, "y": 1 },
-              { "x": 3, "y": 2 },
               { "x": 3, "y": 3 },
               { "x": 3, "y": 4 },
-              { "x": 4, "y": 0 },
+              { "x": 4, "y": 4 }
+            ]
+          },
+          {
+            "type": "DesertAir",
+            "name": "Dry Desert Air",
+            "mass": 1000000,
+            "humidity": 25,
+            "temperature": 35,
+            "oxygenLevel": 18,
+            "sections": [
+              { "x": 2, "y": 0 },
+              { "x": 2, "y": 1 },
+              { "x": 3, "y": 0 },
+              { "x": 3, "y": 1 },
+              { "x": 4, "y": 0 }
+            ]
+          },
+          {
+            "type": "MountainAir",
+            "name": "Fresh Mountain Air",
+            "mass": 800000,
+            "humidity": 50,
+            "temperature": 10,
+            "oxygenLevel": 17,
+            "altitude": 2500.0,
+            "sections": [
+              { "x": 2, "y": 2 },
+              { "x": 3, "y": 2 },
               { "x": 4, "y": 1 },
               { "x": 4, "y": 2 },
-              { "x": 4, "y": 3 },
-              { "x": 4, "y": 4 }
+              { "x": 4, "y": 3 }
             ]
           }
         ]
@@ -204,49 +236,54 @@
     },
     {
       "command": "moveRobot",
-      "timestamp": 2
-    },
-    {
-      "command": "getEnergyStatus",
       "timestamp": 3
     },
     {
       "command": "moveRobot",
-      "timestamp": 4
-    },
-    {
-      "command": "printEnvConditions",
       "timestamp": 5
     },
     {
-      "command": "rechargeBattery",
-      "timeToCharge": 10,
+      "command": "scanObject",
+      "color": "brown",
+      "smell": "earthy",
+      "sound": "muu",
       "timestamp": 6
     },
     {
+      "command": "printEnvConditions",
+      "timestamp": 7
+    },
+    {
       "command": "getEnergyStatus",
-      "timestamp": 16
+      "timestamp": 8
     },
     {
       "command": "moveRobot",
-      "timestamp": 17
-    },
-    {
-      "command": "rechargeBattery",
-      "timeToCharge": 5,
-      "timestamp": 18
+      "timestamp": 9
     },
     {
       "command": "getEnergyStatus",
-      "timestamp": 24
+      "timestamp": 10
+    },
+    {
+      "command": "moveRobot",
+      "timestamp": 11
     },
     {
       "command": "printEnvConditions",
-      "timestamp": 25
+      "timestamp": 12
+    },
+    {
+      "command": "moveRobot",
+      "timestamp": 13
+    },
+    {
+      "command": "moveRobot",
+      "timestamp": 14
     },
     {
       "command": "endSimulation",
-      "timestamp": 26
+      "timestamp": 15
     }
   ]
 }

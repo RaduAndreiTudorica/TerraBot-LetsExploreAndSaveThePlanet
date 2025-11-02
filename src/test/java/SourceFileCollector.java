@@ -10,6 +10,7 @@ public class SourceFileCollector {
         try (var stream = Files.walk(Paths.get(rootDir))) {
             return stream
                     .filter(Files::isRegularFile)
+                    .filter(path -> !path.toAbsolutePath().toString().contains("fileio"))
                     .filter(path -> path.toString().endsWith(".java"))
                     .map(Path::toFile)
                     .toList();
