@@ -1,9 +1,10 @@
-package main.core;
+package main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fileio.InputLoader;
+import main.core.Simulation;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,10 @@ public class Main {
 
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();
+
+        Simulation simulation = new Simulation(MAPPER, inputLoader);
+
+        simulation.run(output);
 
         /*
          * TODO Implement your function here

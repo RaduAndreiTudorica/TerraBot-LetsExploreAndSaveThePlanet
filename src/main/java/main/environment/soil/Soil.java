@@ -127,4 +127,8 @@ public abstract class Soil extends Entity {
     void setBlockingProbability(double blockingProbability) {
         this.blockingProbability = blockingProbability;
     }
+
+    public String getQualityStatus() {
+        return this.qualityStatus;
+    }
 }

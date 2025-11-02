@@ -1,9 +1,5 @@
 package main.core;
 
-import main.environment.air.*;
-import main.environment.soil.*;
-import main.environment.water.*;
-import main.environment.plant.*;
 import main.environment.animal.*;
 
 import java.util.*;
@@ -29,6 +25,36 @@ public class Terrain {
         }
     }
 
+    public List<Animal> getAllAnimals() {
+        List<Animal> allAnimals = new ArrayList<>();
+        for(Section[] rows : map) {
+            for(Section section : rows) {
+                Animal animal = section.getAnimal();
+                if(animal != null) {
+                    allAnimals.add(animal);
+                }
+            }
+        }
+        return allAnimals;
+    }
+
+    public List<Section> getNeighbors(Section section) {
+        if(section == null) {
+            return new ArrayList<>();
+        }
+
+        int x = section.getX();
+        int y = section.getY();
+
+        List<Section> neighbors = new ArrayList<>();
+        neighbors.add(getSection(x, y - 1));
+        neighbors.add(getSection(x + 1, y));
+        neighbors.add(getSection(x, y + 1));
+        neighbors.add(getSection(x - 1, y));
+
+        return neighbors;
+    }
+
     public Section getSection(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             return null;
@@ -48,9 +74,6 @@ public class Terrain {
         }
     }
 
-    public void updateEnvironment() {
-
-    }
 
     public int getWidth() {
         return width;

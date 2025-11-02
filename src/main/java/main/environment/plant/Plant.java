@@ -56,14 +56,12 @@ public class Plant extends Entity {
         this.status = "young";
         this.plantPossibility = BLOCKING_PROBABILITY_MAP.getOrDefault(type, 0);
         this.growthLevel = 0.0;
-        calculateOxygenProduction();
+        this.oxygenProduction = calculateOxygenProduction();
     }
 
     public float calculateOxygenProduction() {
         float baseOxygen =  BASE_OXYGEN_MAP.getOrDefault(this.type, 0.0f);
         float maturityBonus = MATURITY_BONUS_MAP.getOrDefault(this.status, 0.0f);
-
-        setOxygenProduction(baseOxygen + maturityBonus);
         return baseOxygen + maturityBonus;
     }
 
@@ -73,21 +71,11 @@ public class Plant extends Entity {
             return;
         }
 
-        double produced = this.oxygenProduction;
-        air.setOxygenLevel(air.getOxygenLevel() + produced);
+        air.setOxygenLevel(air.getOxygenLevel() + this.oxygenProduction);
 
-        this.growthLevel += produced;
-
-        if(this.growthLevel > 1.0) {
-            this.growthLevel = 0.0;
-            advancematurity();
-            if(!isDead()) {
-                this.oxygenProduction = calculateOxygenProduction();
-            }
-        }
     }
 
-    private void advancematurity() {
+    private void advanceMaturity() {
         int index = Arrays.asList(MATURITY_STAGES).indexOf(this.status);
         if(index < MATURITY_STAGES.length - 1) {
             this.status = MATURITY_STAGES[index + 1];
@@ -99,6 +87,11 @@ public class Plant extends Entity {
             return;
         }
         this.growthLevel += growthLevel;
+
+        if (this.growthLevel >= 1.0) {
+            this.growthLevel = 0.0;
+            advanceMaturity();
+        }
     }
 
     public double getBLockingProbability() {

@@ -1,5 +1,6 @@
 package main.environment.air;
 
+import fileio.CommandInput;
 import main.core.Section;
 
 public class MountainAir extends Air {
@@ -29,7 +30,9 @@ public class MountainAir extends Air {
         double oxygenFactor = this.oxygenLevel - (this.altitude / 1000.0 * 0.5);
         double airQuality = (oxygenFactor * 2) + (this.humidity * 0.6);
 
+        airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
+
 
         this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
@@ -48,6 +51,15 @@ public class MountainAir extends Air {
     @Override
     public double getMaxScore() {
         return 78.0;
+    }
+
+    @Override
+    public boolean applyWeatherEvent(CommandInput command) {
+        if ("peopleHiking".equals(command.type)) {
+            this.numberOfHikers = command.numberOfHikers;
+            return true;
+        }
+        return false;
     }
 
     public double getAltitude() {

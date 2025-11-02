@@ -1,8 +1,11 @@
 package main.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class Entity {
     protected String name;
     protected double mass;
+    @JsonIgnore
     protected Section section;
 
     public Entity() {
