@@ -15,7 +15,7 @@ public class GrasslandSoil extends Soil {
     public GrasslandSoil(String name, double mass, Section section, double nitrogen,
                             double waterRetention, double soilpH,
                             double organicMatter, double rootDensity) {
-        super(name, mass, section, "Grassland",
+        super(name, mass, section, "GrasslandSoil",
                 nitrogen, waterRetention,
                 soilpH, organicMatter);
         this.rootDensity = rootDensity;
@@ -30,8 +30,11 @@ public class GrasslandSoil extends Soil {
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
+        double finalResult = Math.round(normalizedQuality * 100.0) / 100.0;
+
+        this.soilQuality = finalResult;
         interpretQuality();
-        return normalizedQuality;
+        return finalResult;
     }
 
     @Override

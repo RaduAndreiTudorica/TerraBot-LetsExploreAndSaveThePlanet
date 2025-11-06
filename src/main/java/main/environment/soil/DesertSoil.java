@@ -15,7 +15,7 @@ public class DesertSoil extends Soil {
     public DesertSoil(String name, double mass, Section section, double nitrogen,
                         double waterRetention, double soilpH,
                         double organicMatter, double salinity) {
-        super(name, mass, section, "Desert",
+        super(name, mass, section, "DesertSoil",
                 nitrogen, waterRetention,
                 soilpH, organicMatter);
         this.salinity = salinity;
@@ -30,8 +30,11 @@ public class DesertSoil extends Soil {
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
+        double finalResult = Math.round(normalizedQuality * 100.0) / 100.0;
+
+        this.soilQuality = finalResult;
         interpretQuality();
-        return normalizedQuality;
+        return finalResult;
     }
 
     @Override

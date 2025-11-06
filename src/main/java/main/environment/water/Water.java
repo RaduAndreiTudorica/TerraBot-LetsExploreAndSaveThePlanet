@@ -1,5 +1,6 @@
 package main.environment.water;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import main.core.Entity;
 import main.core.Section;
 import main.environment.soil.*;
@@ -23,11 +24,14 @@ public class Water extends Entity {
     private double salinity;
     private double pH;
     private double purity;
-    private int turbidity;
+    private double turbidity;
     private double contaminantIndex;
     private boolean isFrozen;
+    @JsonIgnore
     private double waterQuality;
+    @JsonIgnore
     private String qualityStatus;
+    @JsonIgnore
     private boolean isScanned = false;
 
     public Water() {
@@ -99,6 +103,7 @@ public class Water extends Entity {
     public void markScanned() {
         this.isScanned = true;
     }
+    @JsonIgnore
     public boolean isScanned() {
         return this.isScanned;
     }
@@ -120,7 +125,7 @@ public class Water extends Entity {
         this.waterQuality = calculateWaterQuality();
     }
 
-    public double getPH() {
+    public double getpH() {
         return this.pH;
     }
 
@@ -138,11 +143,11 @@ public class Water extends Entity {
         this.waterQuality = calculateWaterQuality();
     }
 
-    public int getTurbidity() {
+    public double getTurbidity() {
         return this.turbidity;
     }
 
-    public void setTurbidity(int turbidity) {
+    public void setTurbidity(double turbidity) {
         this.turbidity = turbidity;
         this.waterQuality = calculateWaterQuality();
     }
@@ -156,7 +161,7 @@ public class Water extends Entity {
         this.waterQuality = calculateWaterQuality();
     }
 
-    public boolean isFrozen() {
+    public boolean getIsFrozen() {
         return this.isFrozen;
     }
 

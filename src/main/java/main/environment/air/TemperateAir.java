@@ -1,11 +1,13 @@
 package main.environment.air;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CommandInput;
 import main.core.Section;
 
 public class TemperateAir extends Air {
     private double pollenLevel;
     private static final String[] SEASONS = {"Spring", "Summer", "Autumn", "Winter"};
+    @JsonIgnore
     private String currentSeason = SEASONS[0];
 
     public TemperateAir() {
@@ -33,8 +35,6 @@ public class TemperateAir extends Air {
         airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
-
-        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 

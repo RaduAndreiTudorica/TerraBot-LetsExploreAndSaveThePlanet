@@ -13,7 +13,7 @@ public class Terrain {
     public Terrain(int width, int height) {
         this.width = width;
         this.height = height;
-        this.map = new Section[width][height];
+        this.map = new Section[height][width];
         initializeSections();
     }
 
@@ -47,10 +47,10 @@ public class Terrain {
         int y = section.getY();
 
         List<Section> neighbors = new ArrayList<>();
-        neighbors.add(getSection(x, y - 1));
-        neighbors.add(getSection(x + 1, y));
-        neighbors.add(getSection(x, y + 1));
         neighbors.add(getSection(x - 1, y));
+        neighbors.add(getSection(x, y + 1));
+        neighbors.add(getSection(x + 1, y));
+        neighbors.add(getSection(x, y - 1));
 
         return neighbors;
     }

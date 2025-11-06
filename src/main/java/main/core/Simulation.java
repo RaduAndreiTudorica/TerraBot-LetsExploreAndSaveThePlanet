@@ -199,6 +199,8 @@ public class Simulation {
         Section bestMove = robot.findBestSectionToMove(neighbors);
 
         int moveCost = robot.calculateMoveScore(bestMove);
+
+
         if (robot.getEnergy() < moveCost) {
             return new MessageOutput(command.command, command.timestamp,
                             "ERROR: Not enough battery left. Cannot perform action");

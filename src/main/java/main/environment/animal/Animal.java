@@ -1,5 +1,6 @@
 package main.environment.animal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import main.core.Entity;
 import main.core.Section;
 import main.environment.plant.Plant;
@@ -9,11 +10,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Animal extends Entity {
+    @JsonIgnore
     private String status;
     private String type;
     private double intakeRate = 0.08;
+    @JsonIgnore
     private double possibilityToAttack;
+    @JsonIgnore
     private double attackProbability;
+    @JsonIgnore
     private boolean isScanned = false;
 
 
@@ -155,6 +160,7 @@ public class Animal extends Entity {
     public void markScanned() {
         this.isScanned = true;
     }
+    @JsonIgnore
     public boolean isScanned() {
         return this.isScanned;
     }
