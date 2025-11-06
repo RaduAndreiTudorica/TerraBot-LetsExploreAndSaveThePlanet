@@ -1,6 +1,11 @@
 package fileio;
 
-public class PairInput {
-    public int x;
-    public int y;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public final class PairInput {
+    private int x;
+    private int y;
 }

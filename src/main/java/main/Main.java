@@ -12,15 +12,19 @@ import java.io.IOException;
 /**
  * The entry point to this homework. It runs the checker that tests your implementation.
  */
-public class Main {
+public final class Main {
 
-    private Main(){
+    private Main() {
     }
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     public static final ObjectWriter WRITER = MAPPER.writer().withDefaultPrettyPrinter();
 
-
+    /**
+     * @param inputPath input file path
+     * @param outputPath output file path
+     * @throws IOException when files cannot be loaded.
+     */
     public static void action(final String inputPath,
                                 final String outputPath) throws IOException {
 

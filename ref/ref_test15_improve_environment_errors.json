@@ -106,15 +106,15 @@
   "timestamp" : 63
 }, {
   "command" : "moveRobot",
-  "message" : "The robot has successfully moved to position (1, 1).",
+  "message" : "The robot has successfully moved to position (0, 0).",
   "timestamp" : 64
 }, {
   "command" : "moveRobot",
-  "message" : "The robot has successfully moved to position (1, 2).",
+  "message" : "ERROR: Not enough battery left. Cannot perform action",
   "timestamp" : 65
 }, {
   "command" : "moveRobot",
-  "message" : "The robot has successfully moved to position (1, 1).",
+  "message" : "ERROR: Not enough battery left. Cannot perform action",
   "timestamp" : 66
 }, {
   "command" : "endSimulation",

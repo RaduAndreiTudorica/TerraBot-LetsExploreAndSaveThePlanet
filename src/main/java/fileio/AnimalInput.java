@@ -1,11 +1,16 @@
 package fileio;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
-public class AnimalInput {
-    public String type;
-    public String name;
-    public double mass;
-    public List<PairInput> sections;
+@Data
+@NoArgsConstructor
+public final class AnimalInput {
+    private String type;
+    private String name;
+    private double mass;
+    private List<PairInput> sections;
 }
 

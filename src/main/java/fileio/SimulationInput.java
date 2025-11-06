@@ -1,7 +1,12 @@
 package fileio;
 
-public class SimulationInput {
-    public String territoryDim;
-    public int energyPoints;
-    public TerritorySectionParamsInput territorySectionParams;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public final class SimulationInput {
+    private String territoryDim;
+    private int energyPoints;
+    private TerritorySectionParamsInput territorySectionParams;
 }
