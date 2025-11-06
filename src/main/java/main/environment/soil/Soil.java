@@ -1,5 +1,6 @@
 package main.environment.soil;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import main.core.Entity;
 import main.core.Section;
 import main.environment.plant.Plant;
@@ -13,9 +14,9 @@ public abstract class Soil extends Entity {
     private static final NavigableMap<Double, String> QUALITY_MAP = new TreeMap<>();
 
     static {
-        QUALITY_MAP.put(0.0, "Poor");
-        QUALITY_MAP.put(40.0, "Moderate");
-        QUALITY_MAP.put(70.0, "Good");
+        QUALITY_MAP.put(0.0, "poor");
+        QUALITY_MAP.put(40.0, "moderate");
+        QUALITY_MAP.put(70.0, "good");
     }
 
     protected String type;
@@ -24,7 +25,9 @@ public abstract class Soil extends Entity {
     protected double soilpH;
     protected double organicMatter;
     protected double soilQuality = 0.0;
+    @JsonIgnore
     protected double blockingProbability = 0.0;
+    @JsonIgnore
     protected String qualityStatus;
 
     public Soil() {

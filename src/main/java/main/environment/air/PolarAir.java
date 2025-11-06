@@ -1,11 +1,13 @@
 package main.environment.air;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CommandInput;
 import main.core.Section;
 
 public class PolarAir extends Air {
 
     private double iceCrystalConcentration;
+    @JsonIgnore
     private double windSpeed = 0.0;
 
     public PolarAir() {
@@ -32,9 +34,9 @@ public class PolarAir extends Air {
         double airQuality = (this.oxygenLevel * 2) + (100 - Math.abs(getTemperature())) -
                 (this.iceCrystalConcentration * 0.05);
 
+        airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
-        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 

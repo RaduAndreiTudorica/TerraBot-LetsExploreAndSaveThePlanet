@@ -1,10 +1,11 @@
 package main.environment.air;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import main.core.Section;
 import fileio.CommandInput;
 
 public class DesertAir extends Air{
-
+    @JsonIgnore
     private double dustParticles;
     private boolean isDesertStorm = false;
 
@@ -34,7 +35,6 @@ public class DesertAir extends Air{
         airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
-        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 

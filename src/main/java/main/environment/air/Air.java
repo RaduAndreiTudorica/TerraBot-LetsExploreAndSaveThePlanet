@@ -12,9 +12,9 @@ public abstract class Air extends Entity {
     private static final NavigableMap<Double, String> QUALITY_MAP = new TreeMap<>();
 
     static {
-        QUALITY_MAP.put(0.0, "Poor");
-        QUALITY_MAP.put(40.0, "Moderate");
-        QUALITY_MAP.put(70.0, "Good");
+        QUALITY_MAP.put(0.0, "poor");
+        QUALITY_MAP.put(40.0, "moderate");
+        QUALITY_MAP.put(70.0, "good");
     }
 
     protected String type;
@@ -23,7 +23,6 @@ public abstract class Air extends Entity {
     protected double oxygenLevel;
     @JsonIgnore
     protected double toxicityAQ;
-    @JsonIgnore
     protected double airQuality;
     @JsonIgnore
     protected String qualityStatus;
@@ -97,6 +96,8 @@ public abstract class Air extends Entity {
     }
 
     public double getOxygenLevel() {
+        this.oxygenLevel = Math.max(0, Math.min(100, this.oxygenLevel));
+        this.oxygenLevel = Math.round(this.oxygenLevel * 100.0) / 100.0;
         return this.oxygenLevel;
     }
     public void setOxygenLevel(double oxygenLevel) {
@@ -120,6 +121,7 @@ public abstract class Air extends Entity {
 
     void setAirQuality(double airQuality) {
         this.airQuality = airQuality;
+
     }
 
     public  String getQualityStatus() {

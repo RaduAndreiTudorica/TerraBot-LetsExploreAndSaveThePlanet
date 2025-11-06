@@ -1,10 +1,12 @@
 package main.environment.air;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CommandInput;
 import main.core.Section;
 
 public class MountainAir extends Air {
     private double altitude;
+    @JsonIgnore
     private int numberOfHikers = 0;
 
     public MountainAir() {
@@ -33,8 +35,6 @@ public class MountainAir extends Air {
         airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
-
-        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 

@@ -15,7 +15,7 @@ public class ForestSoil extends Soil {
     public ForestSoil(String name, double mass, Section section, double nitrogen,
                         double waterRetention, double soilpH,
                         double organicMatter, double leafLitter) {
-        super(name, mass, section, "Forest",
+        super(name, mass, section, "ForestSoil",
                 nitrogen, waterRetention,
                 soilpH, organicMatter);
         this.leafLitter = leafLitter;
@@ -30,8 +30,11 @@ public class ForestSoil extends Soil {
 
         double normalizedQuality = Math.max(0, Math.min(quality, 100.0));
 
+        double finalResult = Math.round(normalizedQuality * 100.0) / 100.0;
+
+        this.soilQuality = finalResult;
         interpretQuality();
-        return normalizedQuality;
+        return finalResult;
     }
 
     @Override

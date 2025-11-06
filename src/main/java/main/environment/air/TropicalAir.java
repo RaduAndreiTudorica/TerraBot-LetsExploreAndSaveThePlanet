@@ -1,10 +1,12 @@
 package main.environment.air;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CommandInput;
 import main.core.Section;
 
 public class TropicalAir extends Air {
     private double co2Level;
+    @JsonIgnore
     private double rainfallAmount = 0.0;
 
     public TropicalAir() {
@@ -34,8 +36,6 @@ public class TropicalAir extends Air {
         airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
-
-        this.toxicityAQ = calculateToxicityAQ();
         return airQuality;
     }
 

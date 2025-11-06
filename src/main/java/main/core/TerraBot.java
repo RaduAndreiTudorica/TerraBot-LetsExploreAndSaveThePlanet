@@ -48,25 +48,23 @@ public class TerraBot {
         int count = 0;
 
         Soil soil = section.getSoil();
-        if(soil != null) {
+        Air air = section.getAir();
+        Animal animal = section.getAnimal();
+        Plant plant = section.getPlant();
+
+        if (soil != null) {
             sum += soil.getBlockingProbability();
             count++;
         }
-
-        Air air = section.getAir();
-        if(air != null) {
+        if (air != null) {
             sum += air.getToxicityAQ();
             count++;
         }
-
-        Animal animal = section.getAnimal();
-        if(animal != null) {
+        if (animal != null) {
             sum += animal.getAttackProbability();
             count++;
         }
-
-        Plant plant = section.getPlant();
-        if(plant != null) {
+        if (plant != null) {
             sum += plant.getBLockingProbability();
             count++;
         }
@@ -76,7 +74,9 @@ public class TerraBot {
         }
 
         double mean = Math.abs(sum / count);
-        return (int) Math.round(mean);
+        int score = (int) Math.round(mean);
+
+        return score;
     }
 
     public int getEnergy() {

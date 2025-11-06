@@ -1,5 +1,6 @@
 package main.environment.plant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import main.core.Entity;
 import main.core.Section;
 import main.environment.air.Air;
@@ -35,10 +36,14 @@ public class Plant extends Entity {
     }
 
     private String type;
+    @JsonIgnore
     private String status;
+    @JsonIgnore
     private int plantPossibility;
     private double growthLevel;
+    @JsonIgnore
     private double oxygenProduction;
+    @JsonIgnore
     private boolean isScanned = false;
 
     public Plant() {
@@ -94,6 +99,7 @@ public class Plant extends Entity {
         }
     }
 
+    @JsonIgnore
     public double getBLockingProbability() {
         return this.plantPossibility / 100.0;
     }
@@ -104,6 +110,8 @@ public class Plant extends Entity {
     public void markScanned() {
         this.isScanned = true;
     }
+
+    @JsonIgnore
     public boolean isScanned() {
         return this.isScanned;
     }
@@ -112,6 +120,7 @@ public class Plant extends Entity {
         this.type = type;
     }
 
+    @JsonIgnore
     public String get_Status() {
         return this.status;
     }
@@ -136,6 +145,7 @@ public class Plant extends Entity {
         this.status = "dead";
     }
 
+    @JsonIgnore
     public boolean isDead() {
         return this.status.equals("dead");
     }
