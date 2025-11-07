@@ -46,7 +46,7 @@ public class Water extends Entity {
     }
 
     public Water(String name, double mass, Section section, String type, double salinity, double pH,
-                    double purity, int turbidity,
+                    double purity, double turbidity,
                     double contaminantIndex, boolean isFrozen) {
         super(name, mass, section);
 
@@ -129,7 +129,7 @@ public class Water extends Entity {
         return this.pH;
     }
 
-    public void setPH(double pH) {
+    public void setpH(double pH) {
         this.pH = pH;
         this.waterQuality = calculateWaterQuality();
     }

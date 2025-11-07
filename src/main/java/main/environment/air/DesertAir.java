@@ -55,8 +55,8 @@ public class DesertAir extends Air{
 
     @Override
     public boolean applyWeatherEvent(CommandInput command) {
-        if ("desertStorm".equals(command.type)) {
-            this.isDesertStorm = command.desertStorm;
+        if ("desertStorm".equals(command.getType())) {
+            this.isDesertStorm = true;
             return true;
         }
         return false;
@@ -81,5 +81,9 @@ public class DesertAir extends Air{
         this.isDesertStorm = isDesertStorm;
         this.airQuality = updateQuality();
         interpretQuality();
+    }
+
+    public boolean getIsDesertStorm() {
+        return isDesertStorm;
     }
 }

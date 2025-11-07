@@ -1,9 +1,11 @@
 package main;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fileio.InputLoader;
+import fileio.WaterInput;
 import main.core.Simulation;
 
 import java.io.File;
@@ -20,6 +22,11 @@ public final class Main {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     public static final ObjectWriter WRITER = MAPPER.writer().withDefaultPrettyPrinter();
 
+    abstract static class WaterInputMixIn {
+        @JsonProperty("pH")
+        private double pH;
+    }
+
     /**
      * @param inputPath input file path
      * @param outputPath output file path
@@ -27,6 +34,9 @@ public final class Main {
      */
     public static void action(final String inputPath,
                                 final String outputPath) throws IOException {
+
+
+        MAPPER.addMixIn(WaterInput.class, WaterInputMixIn.class);
 
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();

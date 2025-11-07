@@ -53,8 +53,8 @@ public class TemperateAir extends Air {
 
     @Override
     public boolean applyWeatherEvent(CommandInput command) {
-        if ("newSeason".equals(command.type)) {
-            this.currentSeason = command.season;
+        if ("newSeason".equals(command.getType())) {
+            this.currentSeason = command.getSeason();
             return true;
         }
         return false;

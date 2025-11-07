@@ -55,8 +55,8 @@ public class MountainAir extends Air {
 
     @Override
     public boolean applyWeatherEvent(CommandInput command) {
-        if ("peopleHiking".equals(command.type)) {
-            this.numberOfHikers = command.numberOfHikers;
+        if ("peopleHiking".equals(command.getType())) {
+            this.numberOfHikers = command.getNumberOfHikers();
             return true;
         }
         return false;
