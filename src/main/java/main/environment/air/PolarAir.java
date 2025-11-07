@@ -59,8 +59,8 @@ public class PolarAir extends Air {
 
     @Override
     public boolean applyWeatherEvent(CommandInput command) {
-        if ("polarStorm".equals(command.type)) {
-            this.windSpeed = command.windSpeed;
+        if ("polarStorm".equals(command.getType())) {
+            this.windSpeed = command.getWindSpeed();
             return true;
         }
         return false;

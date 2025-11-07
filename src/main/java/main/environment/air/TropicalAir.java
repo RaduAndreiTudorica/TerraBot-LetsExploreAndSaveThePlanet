@@ -56,8 +56,8 @@ public class TropicalAir extends Air {
 
     @Override
     public boolean applyWeatherEvent(CommandInput command) {
-        if ("rainfall".equals(command.type)) {
-            this.rainfallAmount = command.rainfall;
+        if ("rainfall".equals(command.getType())) {
+            this.rainfallAmount = command.getRainfall();
             return true;
         }
         return false;

@@ -51,11 +51,11 @@ public class Simulation {
 
     public void run(ArrayNode output) {
         List<CommandInput> commands = inputLoader.getCommands().stream()
-                .sorted(Comparator.comparingInt(c -> c.timestamp))
+                .sorted(Comparator.comparingInt(c -> c.getTimestamp()))
                 .toList();
 
         for(CommandInput command : commands) {
-            while(currentTimestamp < command.timestamp) {
+            while(currentTimestamp < command.getTimestamp()) {
                 if(robot != null) {
                     robot.isCharging(currentTimestamp);
                 }
@@ -64,9 +64,9 @@ public class Simulation {
                 currentTimestamp++;
             }
 
-            this.currentTimestamp = command.timestamp;
+            this.currentTimestamp = command.getTimestamp();
 
-            CommandExecutor executor = commandMap.get(command.command);
+            CommandExecutor executor = commandMap.get(command.getCommand());
 
             if (executor != null) {
                 BaseOutput pojoOutput;
@@ -74,7 +74,7 @@ public class Simulation {
                 String error = checkCommandErrors(command);
 
                 if (error != null) {
-                    pojoOutput = new MessageOutput(command.command, command.timestamp, error);
+                    pojoOutput = new MessageOutput(command.getCommand(), command.getTimestamp(), error);
                 } else {
 
                     pojoOutput = executor.execute(command);
@@ -143,7 +143,7 @@ public class Simulation {
     }
 
     private String checkCommandErrors(CommandInput command) {
-        String cmdName = command.command;
+        String cmdName = command.getCommand();
 
         if(!simulationStarted && !cmdName.equals("startSimulation")) {
             return "ERROR: Simulation not started. Cannot perform action";
@@ -171,10 +171,10 @@ public class Simulation {
 
         SimulationInput simData = inputLoader.getSimulations().get(simulationIndex);
 
-        String[] dims = simData.territoryDim.split("x");
+        String[] dims = simData.getTerritoryDim().split("x");
         this.terrain = new Terrain(Integer.parseInt(dims[0]), Integer.parseInt(dims[1]));
 
-        this.robot = new TerraBot(simData.energyPoints);
+        this.robot = new TerraBot(simData.getEnergyPoints());
 
         populateSoil(simData, terrain);
         populateAir(simData, terrain);
@@ -184,14 +184,14 @@ public class Simulation {
 
         robot.setSection(terrain.getSection(0, 0));
 
-        return new MessageOutput(command.command, command.timestamp, "Simulation has started.");
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), "Simulation has started.");
     }
 
     private BaseOutput executeEndSimulation(CommandInput command) {
         simulationStarted = false;
         this.robot = null;
         this.terrain = null;
-        return new MessageOutput(command.command, command.timestamp, "Simulation has ended.");
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), "Simulation has ended.");
     }
 
     private BaseOutput executeMoveRobot(CommandInput command) {
@@ -202,7 +202,7 @@ public class Simulation {
 
 
         if (robot.getEnergy() < moveCost) {
-            return new MessageOutput(command.command, command.timestamp,
+            return new MessageOutput(command.getCommand(), command.getTimestamp(),
                             "ERROR: Not enough battery left. Cannot perform action");
         }
 
@@ -212,19 +212,19 @@ public class Simulation {
         String message = String.format("The robot has successfully moved to position (%d, %d).",
                                         bestMove.getX(), bestMove.getY());
 
-        return new MessageOutput(command.command, command.timestamp, message);
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), message);
     }
 
     private BaseOutput executeRechargeBattery(CommandInput command) {
-        robot.startCharging(currentTimestamp, command.timeToCharge);
-        return new MessageOutput(command.command, command.timestamp, "Robot battery is charging.");
+        robot.startCharging(currentTimestamp, command.getTimeToCharge());
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), "Robot battery is charging.");
     }
 
     private BaseOutput executeScanObject(CommandInput command) {
         final int SCAN_COST = 7;
 
         if(robot.getEnergy() < SCAN_COST) {
-            return new MessageOutput(command.command, command.timestamp, "ERROR: Not enough battery left." +
+            return new MessageOutput(command.getCommand(), command.getTimestamp() , "ERROR: Not enough battery left." +
                                                                                     "Cannot perform action");
         }
 
@@ -268,14 +268,14 @@ public class Simulation {
                 break;
         }
 
-        return new MessageOutput(command.command, command.timestamp, message);
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), message);
     }
 
     private static String getString(CommandInput command) {
         String objectType = "unknown";
-        String color = command.color;
-        String smell = command.smell;
-        String sound  = command.sound;
+        String color = command.getColor();
+        String smell = command.getSmell();
+        String sound  = command.getSound();
 
         if ("none".equals(color) && "none".equals(smell) && "none".equals(sound)) {
             objectType = "water";
@@ -291,22 +291,22 @@ public class Simulation {
         final int LEARN_COST = 2;
 
         if(robot.getEnergy() < LEARN_COST) {
-            return new MessageOutput(command.command, command.timestamp, "ERROR: Not enough battery left." +
+            return new MessageOutput(command.getCommand(), command.getTimestamp(), "ERROR: Not enough battery left." +
                                                                                     "Cannot perform action");
         }
 
-        String subject =  command.subject;
-        String components =  command.components;
+        String subject =  command.getSubject();
+        String components =  command.getComponents();
 
         if(robot.getInventory().containsKey(components)) {
             robot.decreaseEnergy(LEARN_COST);
             robot.learnFact(components, subject);
 
-            return new MessageOutput(command.command, command.timestamp,
+            return new MessageOutput(command.getCommand(), command.getTimestamp(),
                     "The fact has been successfully saved in the database.");
         }
 
-        return new MessageOutput(command.command, command.timestamp,
+        return new MessageOutput(command.getCommand(), command.getTimestamp(),
                 "ERROR: Subject not yet saved. Cannot perform action");
     }
 
@@ -327,9 +327,9 @@ public class Simulation {
         }
 
         if(affectedSomething) {
-            return new MessageOutput(command.command, command.timestamp, "The weather has changed.");
+            return new MessageOutput(command.getCommand(), command.getTimestamp(), "The weather has changed.");
         } else {
-            return new MessageOutput(command.command, command.timestamp,
+            return new MessageOutput(command.getCommand(), command.getTimestamp(),
                     "ERROR: The weather change does not affect the environment. Cannot perform action");
         }
     }
@@ -338,15 +338,15 @@ public class Simulation {
         final int IMPROVE_COST = 10;
 
         if(robot.getEnergy() < IMPROVE_COST) {
-            return new MessageOutput(command.command, command.timestamp,
+            return new MessageOutput(command.getCommand(), command.getTimestamp(),
                     "ERROR: Not enough battery left. Cannot perform action");
         }
 
-        String improvementType = command.improvementType;
-        String componentName = command.name;
+        String improvementType = command.getImprovementType();
+        String componentName = command.getName();
 
         if(!robot.getInventory().containsKey(componentName)) {
-            return new MessageOutput(command.command, command.timestamp,
+            return new MessageOutput(command.getCommand(), command.getTimestamp(),
                     "ERROR: Subject not yet saved. Cannot perform action");
         }
 
@@ -365,13 +365,13 @@ public class Simulation {
                 requiredFact = "Method to increaseMoisture";
                 break;
             default:
-                return new MessageOutput(command.command, command.timestamp,
+                return new MessageOutput(command.getCommand(), command.getTimestamp(),
                         "ERROR: Unknown improvement type.");
         }
 
         List<String> factsForComponent = robot.getKnowledgeBase().get(componentName);
         if (factsForComponent == null || !factsForComponent.contains(requiredFact)) {
-            return new MessageOutput(command.command, command.timestamp,
+            return new MessageOutput(command.getCommand(), command.getTimestamp(),
                     "ERROR: Fact not yet saved. Cannot perform action");
         }
 
@@ -413,12 +413,12 @@ public class Simulation {
                 break;
         }
 
-        return new MessageOutput(command.command, command.timestamp, successMessage);
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), successMessage);
     }
 
     private BaseOutput executeGetEnergyStatus(CommandInput command) {
         String message = String.format("TerraBot has %d energy points left.", robot.getEnergy());
-        return new MessageOutput(command.command, command.timestamp, message);
+        return new MessageOutput(command.getCommand(), command.getTimestamp(), message);
     }
 
     private BaseOutput executePrintEnvConditions(CommandInput command) {
@@ -432,7 +432,7 @@ public class Simulation {
         data.setWater(currentSection.getWater());
         data.setAir(currentSection.getAir());
 
-        return new DataOutput(command.command, command.timestamp, data);
+        return new DataOutput(command.getCommand(), command.getTimestamp(), data);
     }
 
     private BaseOutput executePrintMap(CommandInput command) {
@@ -448,7 +448,7 @@ public class Simulation {
             }
         }
 
-        return new DataOutput(command.command, command.timestamp, mapDataList);
+        return new DataOutput(command.getCommand(), command.getTimestamp(), mapDataList);
     }
 
     private static PrintMapOutput getPrintMapOutput(Section section, int x, int y) {
@@ -473,33 +473,33 @@ public class Simulation {
             knowledgeList.add(new KnowledgeBaseOutput(entry.getKey(), entry.getValue()));
         }
 
-        return new DataOutput(command.command, command.timestamp, knowledgeList);
+        return new DataOutput(command.getCommand(), command.getTimestamp(), knowledgeList);
     }
 
     private void populateSoil(SimulationInput simData, Terrain terrain) {
-        for(SoilInput soilInput : simData.territorySectionParams.soil) {
-            for(PairInput coords : soilInput.sections) {
-                Section section = terrain.getSection(coords.x, coords.y);
+        for(SoilInput soilInput : simData.getTerritorySectionParams().getSoil()) {
+            for(PairInput coords : soilInput.getSections()) {
+                Section section = terrain.getSection(coords.getX(), coords.getY());
                 if(section == null) {
                     continue;
                 }
 
-                Soil soilObject = switch (soilInput.type) {
-                    case "ForestSoil" -> new ForestSoil(soilInput.name, soilInput.mass, section,
-                            soilInput.nitrogen, soilInput.waterRetention, soilInput.soilpH,
-                            soilInput.organicMatter, soilInput.leafLitter);
-                    case "DesertSoil" -> new DesertSoil(soilInput.name, soilInput.mass, section,
-                            soilInput.nitrogen, soilInput.waterRetention, soilInput.soilpH,
-                            soilInput.organicMatter, soilInput.salinity);
-                    case "SwampSoil" -> new SwampSoil(soilInput.name, soilInput.mass, section,
-                            soilInput.nitrogen, soilInput.waterRetention, soilInput.soilpH,
-                            soilInput.organicMatter, soilInput.waterLogging);
-                    case "GrasslandSoil" -> new GrasslandSoil(soilInput.name, soilInput.mass, section,
-                            soilInput.nitrogen, soilInput.waterRetention, soilInput.soilpH,
-                            soilInput.organicMatter, soilInput.rootDensity);
-                    case "TundraSoil" -> new TundraSoil(soilInput.name, soilInput.mass, section,
-                            soilInput.nitrogen, soilInput.waterRetention, soilInput.soilpH,
-                            soilInput.organicMatter, soilInput.permafrostDepth);
+                Soil soilObject = switch (soilInput.getType()) {
+                    case "ForestSoil" -> new ForestSoil(soilInput.getName(), soilInput.getMass(), section,
+                            soilInput.getNitrogen(), soilInput.getWaterRetention(), soilInput.getSoilpH(),
+                            soilInput.getOrganicMatter(), soilInput.getLeafLitter());
+                    case "DesertSoil" -> new DesertSoil(soilInput.getName(), soilInput.getMass(), section,
+                            soilInput.getNitrogen(), soilInput.getWaterRetention(), soilInput.getSoilpH(),
+                            soilInput.getOrganicMatter(), soilInput.getSalinity());
+                    case "SwampSoil" -> new SwampSoil(soilInput.getName(), soilInput.getMass(), section,
+                            soilInput.getNitrogen(), soilInput.getWaterRetention(), soilInput.getSoilpH(),
+                            soilInput.getOrganicMatter(), soilInput.getWaterLogging());
+                    case "GrasslandSoil" -> new GrasslandSoil(soilInput.getName(), soilInput.getMass(), section,
+                            soilInput.getNitrogen(), soilInput.getWaterRetention(), soilInput.getSoilpH(),
+                            soilInput.getOrganicMatter(), soilInput.getRootDensity());
+                    case "TundraSoil" -> new TundraSoil(soilInput.getName(), soilInput.getMass(), section,
+                            soilInput.getNitrogen(), soilInput.getWaterRetention(), soilInput.getSoilpH(),
+                            soilInput.getOrganicMatter(), soilInput.getPermafrostDepth());
                     default -> null;
                 };
 
@@ -510,24 +510,24 @@ public class Simulation {
     }
 
     private void populateAir(SimulationInput simData, Terrain terrain) {
-        for (AirInput airInput : simData.territorySectionParams.air) {
-            for (PairInput coords : airInput.sections) {
-                Section section = terrain.getSection(coords.x, coords.y);
+        for (AirInput airInput : simData.getTerritorySectionParams().getAir()) {
+            for (PairInput coords : airInput.getSections()) {
+                Section section = terrain.getSection(coords.getX(), coords.getY());
                 if (section == null) {
                     continue;
                 }
 
-                Air airObject = switch (airInput.type) {
-                    case "TropicalAir" -> new TropicalAir(airInput.name, airInput.mass, section, airInput.type,
-                            airInput.humidity, airInput.temperature, airInput.oxygenLevel, airInput.co2Level);
-                    case "PolarAir" -> new PolarAir(airInput.name, airInput.mass, section, airInput.type,
-                            airInput.humidity, airInput.temperature, airInput.oxygenLevel, airInput.iceCrystalConcentration);
-                    case "TemperateAir" -> new TemperateAir(airInput.name, airInput.mass, section, airInput.type,
-                            airInput.humidity, airInput.temperature, airInput.oxygenLevel, airInput.pollenLevel);
-                    case "DesertAir" -> new DesertAir(airInput.name, airInput.mass, section, airInput.type,
-                            airInput.humidity, airInput.temperature, airInput.oxygenLevel, airInput.dustParticles);
-                    case "MountainAir" -> new MountainAir(airInput.name, airInput.mass, section, airInput.type,
-                            airInput.humidity, airInput.temperature, airInput.oxygenLevel, airInput.altitude);
+                Air airObject = switch (airInput.getType()) {
+                    case "TropicalAir" -> new TropicalAir(airInput.getName(), airInput.getMass(), section, airInput.getType(),
+                            airInput.getHumidity(), airInput.getTemperature(), airInput.getOxygenLevel(), airInput.getCo2Level());
+                    case "PolarAir" -> new PolarAir(airInput.getName(), airInput.getMass(), section, airInput.getType(),
+                            airInput.getHumidity(), airInput.getTemperature(), airInput.getOxygenLevel(), airInput.getIceCrystalConcentration());
+                    case "TemperateAir" -> new TemperateAir(airInput.getName(), airInput.getMass(), section, airInput.getType(),
+                            airInput.getHumidity(), airInput.getTemperature(), airInput.getOxygenLevel(), airInput.getPollenLevel());
+                    case "DesertAir" -> new DesertAir(airInput.getName(), airInput.getMass(), section, airInput.getType(),
+                            airInput.getHumidity(), airInput.getTemperature(), airInput.getOxygenLevel(), airInput.getDustParticles());
+                    case "MountainAir" -> new MountainAir(airInput.getName(), airInput.getMass(), section, airInput.getType(),
+                            airInput.getHumidity(), airInput.getTemperature(), airInput.getOxygenLevel(), airInput.getAltitude());
                     default -> null;
                 };
                 section.setAir(airObject);
@@ -536,16 +536,16 @@ public class Simulation {
     }
 
     private void populateWater(SimulationInput simData, Terrain terrain) {
-        for (WaterInput waterInput : simData.territorySectionParams.water) {
-            for (PairInput coords : waterInput.sections) {
-                Section section = terrain.getSection(coords.x, coords.y);
+        for (WaterInput waterInput : simData.getTerritorySectionParams().getWater()) {
+            for (PairInput coords : waterInput.getSections()) {
+                Section section = terrain.getSection(coords.getX(), coords.getY());
                 if (section == null) {
                     continue;
                 }
 
-                Water waterObject = new Water(waterInput.name, waterInput.mass, section, waterInput.type,
-                        waterInput.salinity, waterInput.pH, waterInput.purity,
-                        waterInput.turbidity, waterInput.contaminantIndex, waterInput.isFrozen);
+                Water waterObject = new Water(waterInput.getName(), waterInput.getMass(), section, waterInput.getType(),
+                        waterInput.getSalinity(), waterInput.getPH(), waterInput.getPurity(),
+                        waterInput.getTurbidity(), waterInput.getContaminantIndex(), waterInput.isFrozen());
 
                 section.setWater(waterObject);
             }
@@ -553,14 +553,14 @@ public class Simulation {
     }
 
     private void populatePlants(SimulationInput simData, Terrain terrain) {
-        for (PlantInput plantInput : simData.territorySectionParams.plants) {
-            for (PairInput coords : plantInput.sections) {
-                Section section = terrain.getSection(coords.x, coords.y);
+        for (PlantInput plantInput : simData.getTerritorySectionParams().getPlants()) {
+            for (PairInput coords : plantInput.getSections()) {
+                Section section = terrain.getSection(coords.getX(), coords.getY());
                 if (section == null) {
                     continue;
                 }
 
-                Plant plantObject = new Plant(plantInput.name, plantInput.mass, section, plantInput.type);
+                Plant plantObject = new Plant(plantInput.getName(), plantInput.getMass(), section, plantInput.getType());
 
                 section.setPlant(plantObject);
             }
@@ -568,14 +568,14 @@ public class Simulation {
     }
 
     private void populateAnimals(SimulationInput simData, Terrain terrain) {
-        for (AnimalInput animalInput : simData.territorySectionParams.animals) {
-            for (PairInput coords : animalInput.sections) {
-                Section section = terrain.getSection(coords.x, coords.y);
+        for (AnimalInput animalInput : simData.getTerritorySectionParams().getAnimals()) {
+            for (PairInput coords : animalInput.getSections()) {
+                Section section = terrain.getSection(coords.getX(), coords.getY());
                 if (section == null) {
                     continue;
                 }
 
-                Animal animalObject = new Animal(animalInput.name, animalInput.mass, section, animalInput.type);
+                Animal animalObject = new Animal(animalInput.getName(), animalInput.getMass(), section, animalInput.getType());
 
                 section.setAnimal(animalObject);
             }
