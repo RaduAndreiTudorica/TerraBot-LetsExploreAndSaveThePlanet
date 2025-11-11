@@ -14,6 +14,7 @@ import java.io.IOException;
 /**
  * The entry point to this homework. It runs the checker that tests your implementation.
  */
+
 public final class Main {
 
     private Main() {
@@ -22,11 +23,6 @@ public final class Main {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     public static final ObjectWriter WRITER = MAPPER.writer().withDefaultPrettyPrinter();
 
-    abstract static class WaterInputMixIn {
-        @JsonProperty("pH")
-        private double pH;
-    }
-
     /**
      * @param inputPath input file path
      * @param outputPath output file path
@@ -34,9 +30,6 @@ public final class Main {
      */
     public static void action(final String inputPath,
                                 final String outputPath) throws IOException {
-
-
-        MAPPER.addMixIn(WaterInput.class, WaterInputMixIn.class);
 
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();
