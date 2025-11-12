@@ -539,7 +539,7 @@
       "temperature" : 38.0,
       "oxygenLevel" : 19.0,
       "airQuality" : 22.2,
-      "desertStorm" : true
+      "desertStorm" : false
     }
   },
   "timestamp" : 40
@@ -574,7 +574,7 @@
       "temperature" : 38.0,
       "oxygenLevel" : 19.0,
       "airQuality" : 22.2,
-      "desertStorm" : true
+      "desertStorm" : false
     }
   },
   "timestamp" : 42
@@ -608,7 +608,7 @@
       "temperature" : 38.0,
       "oxygenLevel" : 19.0,
       "airQuality" : 22.2,
-      "desertStorm" : true
+      "desertStorm" : false
     }
   },
   "timestamp" : 45

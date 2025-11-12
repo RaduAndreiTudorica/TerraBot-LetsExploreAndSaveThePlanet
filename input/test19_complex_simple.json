@@ -106,14 +106,6 @@
         ],
         "animals": [
           {
-            "type": "Herbivores",
-            "name": "Rabbit",
-            "mass": 2.5,
-            "sections": [
-              { "x": 2, "y": 0 }
-            ]
-          },
-          {
             "type": "Omnivores",
             "name": "Squirrel",
             "mass": 0.8,
