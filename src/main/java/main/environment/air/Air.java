@@ -46,6 +46,7 @@ public abstract class Air extends Entity {
         this.humidity = humidity;
         this.temperature = temperature;
         this.oxygenLevel = oxygenLevel;
+        recalc();
     }
 
     abstract public double calculateQuality();
@@ -80,9 +81,7 @@ public abstract class Air extends Entity {
     }
     public void setHumidity(double humidity) {
         this.humidity = humidity;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public double getTemperature() {
@@ -90,9 +89,7 @@ public abstract class Air extends Entity {
     }
     public void setTemperature(double temperature) {
         this.temperature = temperature;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();;
-        interpretQuality();
+        recalc();
     }
 
     public double getOxygenLevel() {
@@ -102,9 +99,7 @@ public abstract class Air extends Entity {
     }
     public void setOxygenLevel(double oxygenLevel) {
         this.oxygenLevel = oxygenLevel;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public double getToxicityAQ() {
@@ -122,6 +117,12 @@ public abstract class Air extends Entity {
     void setAirQuality(double airQuality) {
         this.airQuality = airQuality;
 
+    }
+
+    protected void recalc() {
+        this.airQuality = calculateQuality();
+        this.toxicityAQ = calculateToxicityAQ();
+        interpretQuality();
     }
 
     public  String getQualityStatus() {

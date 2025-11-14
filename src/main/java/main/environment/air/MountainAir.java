@@ -12,9 +12,7 @@ public class MountainAir extends Air {
     public MountainAir() {
         super();
         this.altitude = 0.0;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public MountainAir(String name, double mass, Section section, String type, double humidity,
@@ -22,9 +20,7 @@ public class MountainAir extends Air {
         super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.altitude = altitude;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     @Override
@@ -68,8 +64,6 @@ public class MountainAir extends Air {
 
     public void setAltitude(double altitude) {
         this.altitude = altitude;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 }

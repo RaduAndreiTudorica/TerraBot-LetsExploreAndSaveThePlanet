@@ -21,11 +21,17 @@ public class Water extends Entity {
     }
 
     private String type;
+    @JsonIgnore
     private double salinity;
+    @JsonIgnore
     private double pH;
+    @JsonIgnore
     private double purity;
+    @JsonIgnore
     private double turbidity;
+    @JsonIgnore
     private double contaminantIndex;
+    @JsonIgnore
     private boolean isFrozen;
     @JsonIgnore
     private double waterQuality;

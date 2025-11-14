@@ -106,6 +106,7 @@ public class TerraBot {
     public void startCharging(int currentTimestamp, int timeToCharge) {
         this.isCharging = true;
         this.chargeEndTimestamp = currentTimestamp + timeToCharge;
+        increaseEnergy(timeToCharge);
     }
     public void stopCharging() {
         this.isCharging = false;

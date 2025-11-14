@@ -72,9 +72,7 @@ public class PolarAir extends Air {
 
     public void setIceCrystalConcentration(double iceCrystalConcentration) {
         this.iceCrystalConcentration = iceCrystalConcentration;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public double getWindSpeed() {

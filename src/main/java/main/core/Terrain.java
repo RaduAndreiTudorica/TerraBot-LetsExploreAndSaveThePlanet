@@ -47,10 +47,10 @@ public class Terrain {
         int y = section.getY();
 
         List<Section> neighbors = new ArrayList<>();
-        neighbors.add(getSection(x - 1, y));
         neighbors.add(getSection(x, y + 1));
         neighbors.add(getSection(x + 1, y));
         neighbors.add(getSection(x, y - 1));
+        neighbors.add(getSection(x - 1, y));
 
         return neighbors;
     }

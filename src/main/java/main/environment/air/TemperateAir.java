@@ -66,9 +66,7 @@ public class TemperateAir extends Air {
 
     public void setPollenLevel(double pollenLevel) {
         this.pollenLevel = pollenLevel;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public String getCurrentSeason() {

@@ -23,9 +23,7 @@ public class TropicalAir extends Air {
 
         this.co2Level = co2Level;
 
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     @Override
@@ -69,9 +67,7 @@ public class TropicalAir extends Air {
 
     public void setCo2Level(double co2Level) {
         this.co2Level = co2Level;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public double getRainfallAmount() {
@@ -80,9 +76,7 @@ public class TropicalAir extends Air {
 
     public void applyRainfall(double rainfallAmount) {
         this.rainfallAmount = rainfallAmount;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
 }

@@ -39,11 +39,11 @@ public class Animal extends Entity {
 
     private double getAttackPossibilityByType(String type){
         return switch(type.toLowerCase()) {
-            case "herbivore" -> 85;
-            case "carnivore" -> 30;
-            case "omnivore" -> 60;
-            case "detritivore" -> 90;
-            case "parasite" -> 10;
+            case "herbivores" -> 85;
+            case "carnivores" -> 30;
+            case "omnivores" -> 60;
+            case "detritivores" -> 90;
+            case "parasites" -> 10;
             default -> 0;
         };
     }

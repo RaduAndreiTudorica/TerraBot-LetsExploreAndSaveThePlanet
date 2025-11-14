@@ -56,14 +56,13 @@ public class Simulation {
 
         for(CommandInput command : commands) {
             while(currentTimestamp < command.getTimestamp()) {
-                if(robot != null) {
-                    robot.isCharging(currentTimestamp);
-                }
+                boolean charging = robot != null && robot.isCharging(currentTimestamp);
 
-                runEnvironmentUpdates();
+                if (!charging) {
+                    runEnvironmentUpdates();
+                }
                 currentTimestamp++;
             }
-
             this.currentTimestamp = command.getTimestamp();
 
             CommandExecutor executor = commandMap.get(command.getCommand());
@@ -150,17 +149,11 @@ public class Simulation {
         }
 
         if (robot != null && robot.isCharging(currentTimestamp)) {
-            if (cmdName.equals("rechargeBattery")) {
-                return "ERROR: Robot still charging. Cannot perform action";
+            if (cmdName.equals("getEnergyStatus") || cmdName.equals("endSimulation")) {
+                return null;
             }
 
-            if (!cmdName.equals("getEnergyStatus") && !cmdName.equals("endSimulation")) {
-                return "ERROR: Robot still charging. Cannot perform action";
-            }
-
-            if (cmdName.equals("getEnergyStatus")) {
-                return "ERROR: Robot still charging. Cannot perform action";
-            }
+            return "ERROR: Robot still charging. Cannot perform action";
         }
 
         return null;
@@ -196,6 +189,7 @@ public class Simulation {
 
     private BaseOutput executeMoveRobot(CommandInput command) {
         List<Section> neighbors = terrain.getNeighbors(robot.getSection());
+        //System.out.println("Robot at (" + robot.getSection().getX() + ", " + robot.getSection().getY() + ")");
         Section bestMove = robot.findBestSectionToMove(neighbors);
 
         int moveCost = robot.calculateMoveScore(bestMove);

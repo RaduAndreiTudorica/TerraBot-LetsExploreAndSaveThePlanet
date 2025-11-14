@@ -7,6 +7,7 @@ import fileio.CommandInput;
 public class DesertAir extends Air{
     @JsonIgnore
     private double dustParticles;
+    @JsonIgnore
     private boolean isDesertStorm = false;
 
     public DesertAir() {
@@ -22,9 +23,7 @@ public class DesertAir extends Air{
         super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
         this.dustParticles = dustParticles;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     @Override
@@ -68,9 +67,7 @@ public class DesertAir extends Air{
 
     public void setDustParticles(double dustParticles) {
         this.dustParticles = dustParticles;
-        this.airQuality = calculateQuality();
-        this.toxicityAQ = calculateToxicityAQ();
-        interpretQuality();
+        recalc();
     }
 
     public boolean isDesertStorm() {
