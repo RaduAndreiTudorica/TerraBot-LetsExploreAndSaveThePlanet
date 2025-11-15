@@ -39,6 +39,8 @@ public class Water extends Entity {
     private String qualityStatus;
     @JsonIgnore
     private boolean isScanned = false;
+    @JsonIgnore
+    private int activationTimestamp = -1;
 
     public Water() {
         super();
@@ -86,17 +88,22 @@ public class Water extends Entity {
             return;
         }
 
-        if(iteration % 2 == 0) {
-            Soil soil = section.getSoil();
-            if(soil != null) {
-                double newRetention = soil.getWaterRetention() + 0.1;
-                soil.setWaterRetention(newRetention);
-            }
+        boolean canInteractSoilAndAir = this.activationTimestamp != -1 &&
+                iteration >= this.activationTimestamp + 2;
 
-            Air air = section.getAir();
-            if(air != null) {
-                double newHumidity = air.getHumidity() + 0.1;
-                air.setHumidity(newHumidity);
+        if(canInteractSoilAndAir) {
+            if ((iteration - (this.activationTimestamp + 2)) % 2 == 0) {
+                Soil soil = section.getSoil();
+                if(soil != null) {
+                    double newRetention = soil.getWaterRetention() + 0.1;
+                    soil.setWaterRetention(newRetention);
+                }
+
+                Air air = section.getAir();
+                if(air != null) {
+                    double newHumidity = air.getHumidity() + 0.1;
+                    air.setHumidity(newHumidity);
+                }
             }
         }
 
@@ -106,8 +113,9 @@ public class Water extends Entity {
         }
     }
 
-    public void markScanned() {
+    public void markScanned(int timestamp) {
         this.isScanned = true;
+        this.activationTimestamp = timestamp;
     }
     @JsonIgnore
     public boolean isScanned() {

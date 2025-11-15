@@ -51,13 +51,13 @@ public class Simulation {
 
     public void run(ArrayNode output) {
         List<CommandInput> commands = inputLoader.getCommands().stream()
-                .sorted(Comparator.comparingInt(c -> c.getTimestamp()))
+                .sorted(Comparator.comparingInt(CommandInput::getTimestamp))
                 .toList();
 
-        for(CommandInput command : commands) {
-            while(currentTimestamp < command.getTimestamp()) {
+        for (CommandInput command : commands) {
+            while (currentTimestamp < command.getTimestamp()) {
                 boolean charging = robot != null && robot.isCharging(currentTimestamp);
-                if (!charging) {
+                if (!charging && simulationStarted) {
                     runEnvironmentUpdates();
                 }
                 currentTimestamp++;
@@ -65,17 +65,20 @@ public class Simulation {
 
             this.currentTimestamp = command.getTimestamp();
 
+            boolean charging = robot != null && robot.isCharging(currentTimestamp);
+            if (!charging && simulationStarted) {
+                runEnvironmentUpdates();
+            }
+
             CommandExecutor executor = commandMap.get(command.getCommand());
 
             if (executor != null) {
                 BaseOutput pojoOutput;
-
                 String error = checkCommandErrors(command);
 
                 if (error != null) {
                     pojoOutput = new MessageOutput(command.getCommand(), command.getTimestamp(), error);
                 } else {
-
                     pojoOutput = executor.execute(command);
                 }
 
@@ -84,6 +87,7 @@ public class Simulation {
                     output.add(nodeOutput);
                 }
             }
+            currentTimestamp++;
         }
     }
 
@@ -125,9 +129,9 @@ public class Simulation {
                 Section newSection = entry.getValue();
 
                 if(animal.isActive(currentTimestamp) && newSection != null) {
-                    System.out.println("Animal " + animal.getName() + " moving from (" +
-                            animal.getSection().getX() + ", " + animal.getSection().getY() + ") to (" +
-                            newSection.getX() + ", " + newSection.getY() + ") at timestamp " + currentTimestamp);
+//                    System.out.println("Animal " + animal.getName() + " moving from (" +
+//                            animal.getSection().getX() + ", " + animal.getSection().getY() + ") to (" +
+//                            newSection.getX() + ", " + newSection.getY() + ") at timestamp " + currentTimestamp);
                     animal.getSection().setAnimal(null);
                     newSection.setAnimal(animal);
                     animal.setSection(newSection);
@@ -234,7 +238,7 @@ public class Simulation {
                 Water water = currentSection.getWater();
                 if (water != null && !water.isScanned()) {
                     robot.decreaseEnergy(SCAN_COST);
-                    water.markScanned();
+                    water.markScanned(command.getTimestamp());
                     robot.addToInventory(water.getName(), water);
                     message = "The scanned object is water.";
                 }
@@ -255,7 +259,7 @@ public class Simulation {
                 if (animal != null && !animal.isScanned()) {
                     robot.decreaseEnergy(SCAN_COST);
                     animal.markScanned();
-                    animal.setActivationTimestamp(command.getTimestamp() - 1);
+                    animal.setActivationTimestamp(command.getTimestamp());
 //                    System.out.println("Animal " + animal.getName() + " scanned at timestamp " + command.getTimestamp());
                     robot.addToInventory(animal.getName(), animal);
                     message = "The scanned object is an animal.";
