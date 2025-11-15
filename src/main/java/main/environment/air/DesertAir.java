@@ -40,7 +40,7 @@ public class DesertAir extends Air{
     @Override
     public double updateQuality() {
         double newAirQuality = this.airQuality - (this.isDesertStorm ? 30 : 0);
-
+        newAirQuality = Math.max(0, Math.min(100, newAirQuality));
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
 
         this.toxicityAQ = calculateToxicityAQ();
@@ -56,6 +56,8 @@ public class DesertAir extends Air{
     public boolean applyWeatherEvent(CommandInput command) {
         if ("desertStorm".equals(command.getType())) {
             this.isDesertStorm = true;
+            this.airQuality = updateQuality();
+            interpretQuality();
             return true;
         }
         return false;

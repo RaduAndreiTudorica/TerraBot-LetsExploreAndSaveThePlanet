@@ -64,7 +64,7 @@ public class Plant extends Entity {
         this.oxygenProduction = calculateOxygenProduction();
     }
 
-    public float calculateOxygenProduction() {
+    public double calculateOxygenProduction() {
         float baseOxygen =  BASE_OXYGEN_MAP.getOrDefault(this.type, 0.0f);
         float maturityBonus = MATURITY_BONUS_MAP.getOrDefault(this.status, 0.0f);
         return baseOxygen + maturityBonus;
@@ -75,9 +75,7 @@ public class Plant extends Entity {
         if(air == null || isDead()) {
             return;
         }
-
         air.setOxygenLevel(air.getOxygenLevel() + this.oxygenProduction);
-
     }
 
     private void advanceMaturity() {
@@ -96,6 +94,7 @@ public class Plant extends Entity {
         if (this.growthLevel >= 1.0) {
             this.growthLevel = 0.0;
             advanceMaturity();
+            this.oxygenProduction = calculateOxygenProduction();
         }
     }
 

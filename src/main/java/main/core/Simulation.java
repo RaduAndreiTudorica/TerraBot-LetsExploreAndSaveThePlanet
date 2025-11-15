@@ -57,12 +57,12 @@ public class Simulation {
         for(CommandInput command : commands) {
             while(currentTimestamp < command.getTimestamp()) {
                 boolean charging = robot != null && robot.isCharging(currentTimestamp);
-
                 if (!charging) {
                     runEnvironmentUpdates();
                 }
                 currentTimestamp++;
             }
+
             this.currentTimestamp = command.getTimestamp();
 
             CommandExecutor executor = commandMap.get(command.getCommand());
@@ -113,7 +113,7 @@ public class Simulation {
             Map<Animal, Section> moveToMake = new HashMap<>();
 
             for(Animal animal : allAnimals) {
-                if(animal.isScanned()) {
+                if(animal.isActive(currentTimestamp)) {
                     List<Section> neighbours = terrain.getNeighbors(animal.getSection());
                     Section bestMove = animal.findBestSectionToMove(neighbours);
                     moveToMake.put(animal, bestMove);
@@ -124,7 +124,10 @@ public class Simulation {
                 Animal animal = entry.getKey();
                 Section newSection = entry.getValue();
 
-                if(animal.isScanned() && newSection != null) {
+                if(animal.isActive(currentTimestamp) && newSection != null) {
+                    System.out.println("Animal " + animal.getName() + " moving from (" +
+                            animal.getSection().getX() + ", " + animal.getSection().getY() + ") to (" +
+                            newSection.getX() + ", " + newSection.getY() + ") at timestamp " + currentTimestamp);
                     animal.getSection().setAnimal(null);
                     newSection.setAnimal(animal);
                     animal.setSection(newSection);
@@ -149,13 +152,8 @@ public class Simulation {
         }
 
         if (robot != null && robot.isCharging(currentTimestamp)) {
-            if (cmdName.equals("getEnergyStatus") || cmdName.equals("endSimulation")) {
-                return null;
-            }
-
             return "ERROR: Robot still charging. Cannot perform action";
         }
-
         return null;
     }
 
@@ -189,7 +187,11 @@ public class Simulation {
 
     private BaseOutput executeMoveRobot(CommandInput command) {
         List<Section> neighbors = terrain.getNeighbors(robot.getSection());
-        //System.out.println("Robot at (" + robot.getSection().getX() + ", " + robot.getSection().getY() + ")");
+//        System.out.println("Robot at (" + robot.getSection().getX() + ", " + robot.getSection().getY() + ")");
+//        Animal a = robot.getSection().getAnimal();
+//        if (a != null) {
+//            System.out.println("  Animal present: " + a.getName() + ", scanned: " + a.isScanned());
+//        }
         Section bestMove = robot.findBestSectionToMove(neighbors);
 
         int moveCost = robot.calculateMoveScore(bestMove);
@@ -253,6 +255,8 @@ public class Simulation {
                 if (animal != null && !animal.isScanned()) {
                     robot.decreaseEnergy(SCAN_COST);
                     animal.markScanned();
+                    animal.setActivationTimestamp(command.getTimestamp() - 1);
+//                    System.out.println("Animal " + animal.getName() + " scanned at timestamp " + command.getTimestamp());
                     robot.addToInventory(animal.getName(), animal);
                     message = "The scanned object is an animal.";
                 }

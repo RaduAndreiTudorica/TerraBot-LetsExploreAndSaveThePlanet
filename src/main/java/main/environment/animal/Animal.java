@@ -20,6 +20,8 @@ public class Animal extends Entity {
     private double attackProbability;
     @JsonIgnore
     private boolean isScanned = false;
+    @JsonIgnore
+    private int activationTimestamp = -1;
 
 
     public Animal() {
@@ -65,7 +67,7 @@ public class Animal extends Entity {
         boolean ate = false;
 
         if("Carnivore".equalsIgnoreCase(type) || "Parasite".equalsIgnoreCase(type)) {
-            if(prey != null) {
+            if(prey != null && !prey.isScanned()) {
                 this.mass += prey.getMass();
                 soil.setOrganicMatter(soil.getOrganicMatter() + 0.5);
                 section.setAnimal(null);
@@ -191,6 +193,18 @@ public class Animal extends Entity {
 
     public double getAttackProbability() {
         return this.attackProbability;
+    }
+
+    public int getActivationTimestamp() {
+        return activationTimestamp;
+    }
+
+    public void setActivationTimestamp(int activationTimestamp) {
+        this.activationTimestamp = activationTimestamp;
+    }
+
+    public boolean isActive(int currentTimestamp) {
+        return isScanned && currentTimestamp > activationTimestamp;
     }
 
 }

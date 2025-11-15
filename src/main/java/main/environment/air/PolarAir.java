@@ -48,7 +48,7 @@ public class PolarAir extends Air {
         airQuality = Math.round(airQuality * 100.0) / 100.0;
 
 
-        this.toxicityAQ = calculateToxicityAQ();;
+        this.toxicityAQ = calculateToxicityAQ();
         return newAirQuality;
     }
 
@@ -61,6 +61,8 @@ public class PolarAir extends Air {
     public boolean applyWeatherEvent(CommandInput command) {
         if ("polarStorm".equals(command.getType())) {
             this.windSpeed = command.getWindSpeed();
+            this.airQuality = updateQuality();
+            interpretQuality();
             return true;
         }
         return false;

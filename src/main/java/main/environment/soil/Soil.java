@@ -91,7 +91,8 @@ public abstract class Soil extends Entity {
     }
 
     public void setWaterRetention(double waterRetention) {
-        this.waterRetention = waterRetention;
+        this.waterRetention = Math.max(0, Math.min(100, waterRetention));
+        this.waterRetention = Math.round(this.waterRetention * 100.0) / 100.0;
         this.soilQuality = calculateQuality();
         this.blockingProbability = calculateBlockingProbability();
     }

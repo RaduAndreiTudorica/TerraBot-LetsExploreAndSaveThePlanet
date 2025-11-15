@@ -71,12 +71,15 @@ public abstract class Air extends Entity {
     public double calculateToxicityAQ() {
         double toxicityAQ = 100 * (1 - getAirQuality() / getMaxScore());
 
+        toxicityAQ = Math.max(0, Math.min(100, toxicityAQ));
         toxicityAQ = Math.round(toxicityAQ * 100.0) / 100.0;
 
         return toxicityAQ;
     }
 
     public double getHumidity() {
+        this.humidity = Math.max(0, Math.min(100, this.humidity));
+        this.humidity = Math.round(this.humidity * 100.0) / 100.0;
         return this.humidity;
     }
     public void setHumidity(double humidity) {

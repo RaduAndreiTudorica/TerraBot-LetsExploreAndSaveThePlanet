@@ -13,7 +13,7 @@ public class Terrain {
     public Terrain(int width, int height) {
         this.width = width;
         this.height = height;
-        this.map = new Section[height][width];
+        this.map = new Section[width][height];
         initializeSections();
     }
 
