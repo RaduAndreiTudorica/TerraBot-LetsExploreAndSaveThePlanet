@@ -77,16 +77,6 @@ public class TerraBot {
         double mean = Math.abs(sum / count);
         int score = (int) Math.round(mean);
 
-//        System.out.printf("Calculated move score for section (%d, %d): %d%n",
-//                section.getX(), section.getY(), score);
-//        System.out.printf("Calculated move score for section (%d, %d):\n soil: %.2f, air: %.2f, animal: %.2f, plant: %.2f => score: %d%n",
-//                section.getX(), section.getY(),
-//                soil != null ? soil.getBlockingProbability() : 0.0,
-//                air != null ? air.getToxicityAQ() : 0.0,
-//                animal != null ? animal.getAttackProbability() : 0.0,
-//                plant != null ? plant.getBLockingProbability() : 0.0,
-//                score);
-
         return score;
     }
 

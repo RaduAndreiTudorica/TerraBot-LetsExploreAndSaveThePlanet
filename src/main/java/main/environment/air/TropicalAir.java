@@ -8,6 +8,8 @@ public class TropicalAir extends Air {
     private double co2Level;
     @JsonIgnore
     private double rainfallAmount = 0.0;
+    @JsonIgnore
+    private int rainfallTimestamp = -1;
 
     public TropicalAir() {
         super();
@@ -57,11 +59,22 @@ public class TropicalAir extends Air {
     public boolean applyWeatherEvent(CommandInput command) {
         if ("rainfall".equals(command.getType())) {
             this.rainfallAmount = command.getRainfall();
-            this.airQuality = updateQuality();
-            interpretQuality();
+            this.rainfallTimestamp = command.getTimestamp();
+            recalc();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void interactWithEnvironment(Section section, int iteration) {
+        super.interactWithEnvironment(section, iteration);
+
+        if (this.rainfallAmount > 0 && iteration >= this.rainfallTimestamp + 2) {
+            this.rainfallAmount = 0.0;
+            this.rainfallTimestamp = -1;
+            recalc();
+        }
     }
 
     public double getCo2Level() {
