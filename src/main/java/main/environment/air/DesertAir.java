@@ -39,7 +39,9 @@ public class DesertAir extends Air{
 
     @Override
     public double updateQuality() {
-        double newAirQuality = this.airQuality - (this.isDesertStorm ? 30 : 0);
+        double baseQuality = calculateQuality();
+        double newAirQuality = baseQuality - (this.isDesertStorm ? 30 : 0);
+
         newAirQuality = Math.max(0, Math.min(100, newAirQuality));
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
 

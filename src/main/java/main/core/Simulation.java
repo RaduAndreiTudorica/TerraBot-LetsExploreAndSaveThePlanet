@@ -127,9 +127,6 @@ public class Simulation {
                 Section newSection = entry.getValue();
 
                 if(animal.isActive(currentTimestamp) && newSection != null) {
-//                    System.out.println("Animal " + animal.getName() + " moving from (" +
-//                            animal.getSection().getX() + ", " + animal.getSection().getY() + ") to (" +
-//                            newSection.getX() + ", " + newSection.getY() + ") at timestamp " + currentTimestamp);
                     animal.getSection().setAnimal(null);
                     newSection.setAnimal(animal);
                     animal.setSection(newSection);
@@ -195,11 +192,7 @@ public class Simulation {
 
     private BaseOutput executeMoveRobot(CommandInput command) {
         List<Section> neighbors = terrain.getNeighbors(robot.getSection());
-//        System.out.println("Robot at (" + robot.getSection().getX() + ", " + robot.getSection().getY() + ")");
-//        Animal a = robot.getSection().getAnimal();
-//        if (a != null) {
-//            System.out.println("  Animal present: " + a.getName() + ", scanned: " + a.isScanned());
-//        }
+
         Section bestMove = robot.findBestSectionToMove(neighbors);
 
         int moveCost = robot.calculateMoveScore(bestMove);

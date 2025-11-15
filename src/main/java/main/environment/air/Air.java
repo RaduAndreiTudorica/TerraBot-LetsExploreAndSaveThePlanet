@@ -46,7 +46,6 @@ public abstract class Air extends Entity {
         this.humidity = humidity;
         this.temperature = temperature;
         this.oxygenLevel = oxygenLevel;
-        recalc();
     }
 
     abstract public double calculateQuality();
@@ -121,7 +120,7 @@ public abstract class Air extends Entity {
     }
 
     protected void recalc() {
-        this.airQuality = calculateQuality();
+        this.airQuality = updateQuality();
         this.toxicityAQ = calculateToxicityAQ();
         interpretQuality();
     }

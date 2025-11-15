@@ -42,7 +42,8 @@ public class PolarAir extends Air {
 
     @Override
     public double updateQuality() {
-        double newAirQuality = this.airQuality - (this.windSpeed * 0.02);
+        double baseQuality = calculateQuality();
+        double newAirQuality = baseQuality - (this.windSpeed * 0.02);
 
         airQuality = Math.max(0, Math.min(100, airQuality));
         airQuality = Math.round(airQuality * 100.0) / 100.0;

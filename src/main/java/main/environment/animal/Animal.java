@@ -204,7 +204,8 @@ public class Animal extends Entity {
     }
 
     public boolean isActive(int currentTimestamp) {
-        return isScanned && currentTimestamp > activationTimestamp;
+        return isScanned && activationTimestamp != -1 &&
+                currentTimestamp >= activationTimestamp + 2;
     }
 
 }

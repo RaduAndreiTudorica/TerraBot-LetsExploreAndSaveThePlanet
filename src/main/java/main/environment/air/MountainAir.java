@@ -36,7 +36,8 @@ public class MountainAir extends Air {
 
     @Override
     public double updateQuality() {
-        double newAirQuality = this.airQuality - (this.numberOfHikers * 0.1);
+        double baseQuality = calculateQuality();
+        double newAirQuality = baseQuality - (this.numberOfHikers * 0.1);
 
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
 

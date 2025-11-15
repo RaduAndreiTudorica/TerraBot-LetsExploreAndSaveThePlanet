@@ -21,9 +21,8 @@ public class TropicalAir extends Air {
                         double temperature, double oxygenLevel, double co2Level) {
         super(name, mass, section, type, humidity, temperature, oxygenLevel);
 
-        this.co2Level = co2Level;
+        setCo2Level(co2Level);
 
-        recalc();
     }
 
     @Override
@@ -39,8 +38,10 @@ public class TropicalAir extends Air {
 
     @Override
     public double updateQuality() {
-        double newAirQuality = this.airQuality + (this.rainfallAmount * 0.3);
+        double baseQuality = calculateQuality();
+        double newAirQuality = baseQuality + (this.rainfallAmount * 0.3);
 
+        newAirQuality = Math.max(0, Math.min(100, newAirQuality));
         newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
 
         this.toxicityAQ = calculateToxicityAQ();
