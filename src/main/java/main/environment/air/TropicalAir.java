@@ -68,7 +68,8 @@ public class TropicalAir extends Air {
     }
 
     public void setCo2Level(double co2Level) {
-        this.co2Level = co2Level;
+        this.co2Level = Math.max(0, Math.min(100, co2Level));
+        this.co2Level = Math.round(this.co2Level * 100.0) / 100.0;
         recalc();
     }
 

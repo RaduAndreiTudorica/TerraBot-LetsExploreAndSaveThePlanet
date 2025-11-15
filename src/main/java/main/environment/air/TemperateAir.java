@@ -40,10 +40,16 @@ public class TemperateAir extends Air {
 
     @Override
     public double updateQuality() {
+        double baseQuality = calculateQuality();
+
         double seasonPenalty = currentSeason.equalsIgnoreCase(SEASONS[0]) ? 15 : 0;
 
-        this.toxicityAQ = calculateToxicityAQ();
-        return seasonPenalty;
+        double newAirQuality = baseQuality - seasonPenalty;
+
+        newAirQuality = Math.max(0, Math.min(100, newAirQuality));
+        newAirQuality = Math.round(newAirQuality * 100.0) / 100.0;
+
+        return newAirQuality;
     }
 
     @Override
@@ -56,7 +62,10 @@ public class TemperateAir extends Air {
         if ("newSeason".equals(command.getType())) {
             this.currentSeason = command.getSeason();
             this.airQuality = updateQuality();
+
+            this.toxicityAQ = calculateToxicityAQ();
             interpretQuality();
+
             return true;
         }
         return false;

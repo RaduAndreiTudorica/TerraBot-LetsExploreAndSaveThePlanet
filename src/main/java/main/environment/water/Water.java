@@ -88,10 +88,10 @@ public class Water extends Entity {
             return;
         }
 
-        boolean canInteractSoilAndAir = this.activationTimestamp != -1 &&
+        boolean canInteract = this.activationTimestamp != -1 &&
                 iteration >= this.activationTimestamp + 2;
 
-        if(canInteractSoilAndAir) {
+        if(canInteract) {
             if ((iteration - (this.activationTimestamp + 2)) % 2 == 0) {
                 Soil soil = section.getSoil();
                 if(soil != null) {

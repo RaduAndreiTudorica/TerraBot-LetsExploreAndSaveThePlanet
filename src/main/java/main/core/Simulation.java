@@ -162,6 +162,10 @@ public class Simulation {
     }
 
     private BaseOutput executeStartSimulation(CommandInput command) {
+        if (simulationStarted) {
+            return new MessageOutput(command.getCommand(), command.getTimestamp(), "ERROR: Simulation already started. Cannot perform action");
+        }
+
         simulationStarted = true;
 
         SimulationInput simData = inputLoader.getSimulations().get(simulationIndex);
@@ -178,6 +182,8 @@ public class Simulation {
         populateAnimals(simData, terrain);
 
         robot.setSection(terrain.getSection(0, 0));
+
+        simulationIndex++;
 
         return new MessageOutput(command.getCommand(), command.getTimestamp(), "Simulation has started.");
     }
@@ -274,19 +280,31 @@ public class Simulation {
     }
 
     private static String getString(CommandInput command) {
-        String objectType = "unknown";
         String color = command.getColor();
         String smell = command.getSmell();
         String sound  = command.getSound();
 
         if ("none".equals(color) && "none".equals(smell) && "none".equals(sound)) {
-            objectType = "water";
-        } else if ("pink".equals(color) && "sweet".equals(smell) && "none".equals(sound)) {
-            objectType = "plant";
-        } else if ("brown".equals(color) && "earthy".equals(smell) && "muu".equals(sound)) {
-            objectType = "animal";
+            return "water";
         }
-        return objectType;
+
+        if (sound != null && !"none".equals(sound)) {
+            return "animal";
+        }
+        if (smell != null && !"none".equals(smell)) {
+            if (smell.contains("floral") || smell.contains("scent") || smell.contains("sweety")) {
+                return "plant";
+            }
+        }
+
+        if (color != null && !"none".equals(color)) {
+            return "plant";
+        }
+
+        if (smell != null && !"none".equals(smell)) {
+            return "animal";
+        }
+        return "unknown";
     }
 
     private BaseOutput executeLearnFact(CommandInput command) {
