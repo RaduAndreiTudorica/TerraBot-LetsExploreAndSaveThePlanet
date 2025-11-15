@@ -56,8 +56,7 @@ public class Simulation {
 
         for (CommandInput command : commands) {
             while (currentTimestamp < command.getTimestamp()) {
-                boolean charging = robot != null && robot.isCharging(currentTimestamp);
-                if (!charging && simulationStarted) {
+                if (simulationStarted) {
                     runEnvironmentUpdates();
                 }
                 currentTimestamp++;
@@ -65,8 +64,7 @@ public class Simulation {
 
             this.currentTimestamp = command.getTimestamp();
 
-            boolean charging = robot != null && robot.isCharging(currentTimestamp);
-            if (!charging && simulationStarted) {
+            if (simulationStarted) {
                 runEnvironmentUpdates();
             }
 
@@ -230,8 +228,8 @@ public class Simulation {
         final int SCAN_COST = 7;
 
         if(robot.getEnergy() < SCAN_COST) {
-            return new MessageOutput(command.getCommand(), command.getTimestamp() , "ERROR: Not enough battery left." +
-                                                                                    "Cannot perform action");
+            return new MessageOutput(command.getCommand(), command.getTimestamp() , "ERROR: Not enough " +
+                                                                                            "energy to perform action");
         }
 
         String objectType = getString(command);
@@ -245,7 +243,7 @@ public class Simulation {
                 if (water != null && !water.isScanned()) {
                     robot.decreaseEnergy(SCAN_COST);
                     water.markScanned(command.getTimestamp());
-                    robot.addToInventory(water.getName(), water);
+                    robot.addToInventory(water.getName());
                     message = "The scanned object is water.";
                 }
                 break;
@@ -255,7 +253,7 @@ public class Simulation {
                 if (plant != null && !plant.isScanned()) {
                     robot.decreaseEnergy(SCAN_COST);
                     plant.markScanned();
-                    robot.addToInventory(plant.getName(), plant);
+                    robot.addToInventory(plant.getName());
                     message = "The scanned object is a plant.";
                 }
                 break;
@@ -267,7 +265,7 @@ public class Simulation {
                     animal.markScanned();
                     animal.setActivationTimestamp(command.getTimestamp());
 //                    System.out.println("Animal " + animal.getName() + " scanned at timestamp " + command.getTimestamp());
-                    robot.addToInventory(animal.getName(), animal);
+                    robot.addToInventory(animal.getName());
                     message = "The scanned object is an animal.";
                 }
                 break;
@@ -311,14 +309,14 @@ public class Simulation {
         final int LEARN_COST = 2;
 
         if(robot.getEnergy() < LEARN_COST) {
-            return new MessageOutput(command.getCommand(), command.getTimestamp(), "ERROR: Not enough battery left." +
+            return new MessageOutput(command.getCommand(), command.getTimestamp(), "ERROR: Not enough battery left. " +
                                                                                     "Cannot perform action");
         }
 
         String subject =  command.getSubject();
         String components =  command.getComponents();
 
-        if(robot.getInventory().containsKey(components)) {
+        if(robot.hasScanned(components)) {
             robot.decreaseEnergy(LEARN_COST);
             robot.learnFact(components, subject);
 
@@ -365,7 +363,7 @@ public class Simulation {
         String improvementType = command.getImprovementType();
         String componentName = command.getName();
 
-        if(!robot.getInventory().containsKey(componentName)) {
+        if(!robot.hasScanned(componentName)) {
             return new MessageOutput(command.getCommand(), command.getTimestamp(),
                     "ERROR: Subject not yet saved. Cannot perform action");
         }
@@ -376,10 +374,10 @@ public class Simulation {
                 requiredFact = "Method to plant " + componentName;
                 break;
             case "fertilizeSoil":
-                requiredFact = "Method to fertilize soil with " + componentName;
+                requiredFact = "Method to fertilize with " + componentName;
                 break;
             case "increaseHumidity":
-                requiredFact = "Method to increaseHumidity";
+                requiredFact = "Method to increaseHumidity.";
                 break;
             case "increaseMoisture":
                 requiredFact = "Method to increaseMoisture";

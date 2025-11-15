@@ -96,9 +96,7 @@ public abstract class Air extends Entity {
     }
 
     public double getOxygenLevel() {
-        this.oxygenLevel = Math.max(0, Math.min(100, this.oxygenLevel));
-        this.oxygenLevel = Math.round(this.oxygenLevel * 100.0) / 100.0;
-        return this.oxygenLevel;
+        return Math.round(this.oxygenLevel * 100.0) / 100.0;
     }
     public void setOxygenLevel(double oxygenLevel) {
         this.oxygenLevel = oxygenLevel;

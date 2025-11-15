@@ -61,8 +61,16 @@ public abstract class Soil extends Entity {
 
     public void interactWithEnvironment(Section section, int iteration) {
         Plant plant = section.getPlant();
-        if (plant != null && plant.isScanned()) {
+        if (plant == null) {
+            return;
+        }
+
+        if (plant.isScanned()) {
             plant.addGrowthLevel(GROWTH_FACTOR);
+        }
+
+        if (plant.isDead()) {
+            section.setPlant(null);
         }
     }
 

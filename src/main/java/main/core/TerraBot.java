@@ -15,7 +15,8 @@ public class TerraBot {
     private int chargeEndTimestamp = 0;
 
     private Map<String, List<String>> knowledgeBase = new LinkedHashMap<>();
-    private Map<String, Object> inventory = new HashMap<>();
+    //private Map<String, Object> inventory = new HashMap<>();
+    private Set<String> scannedObjectNames = new HashSet<>();
 
     public TerraBot(int initialEnergy) {
         this.energy = initialEnergy;
@@ -140,10 +141,10 @@ public class TerraBot {
         return knowledgeBase;
     }
 
-    public void addToInventory(String name, Object item) {
-        inventory.put(name, item);
+    public void addToInventory(String name) {
+        scannedObjectNames.add(name);
     }
-    public Map<String, Object> getInventory() {
-        return inventory;
+    public boolean hasScanned(String name) {
+        return scannedObjectNames.contains(name);
     }
 }
