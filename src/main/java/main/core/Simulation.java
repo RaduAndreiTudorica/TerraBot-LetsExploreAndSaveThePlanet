@@ -370,7 +370,7 @@ public class Simulation {
                 requiredFact = "Method to fertilize with " + componentName;
                 break;
             case "increaseHumidity":
-                requiredFact = "Method to increaseHumidity.";
+                requiredFact = "Method to increase Humidity.";
                 break;
             case "increaseMoisture":
                 requiredFact = "Method to increaseMoisture";
@@ -424,6 +424,7 @@ public class Simulation {
                 break;
         }
 
+        robot.removeFromInventory(componentName);
         return new MessageOutput(command.getCommand(), command.getTimestamp(), successMessage);
     }
 

@@ -126,6 +126,9 @@ public class TerraBot {
         knowledgeBase.putIfAbsent(topic, new ArrayList<>());
         knowledgeBase.get(topic).add(fact);
     }
+    public void removeFromInventory(String name) {
+        scannedObjectNames.remove(name);
+    }
 
     public Map<String, List<String>> getKnowledgeBase() {
         return knowledgeBase;

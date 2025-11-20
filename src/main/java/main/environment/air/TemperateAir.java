@@ -8,7 +8,7 @@ public class TemperateAir extends Air {
     private double pollenLevel;
     private static final String[] SEASONS = {"Spring", "Summer", "Autumn", "Winter"};
     @JsonIgnore
-    private String currentSeason = SEASONS[0];
+    private String currentSeason = "";
 
     public TemperateAir() {
         super();
@@ -41,8 +41,8 @@ public class TemperateAir extends Air {
     @Override
     public double updateQuality() {
         double baseQuality = calculateQuality();
+        double seasonPenalty = SEASONS[0].equalsIgnoreCase(currentSeason) ? 15 : 0;
 
-        double seasonPenalty = currentSeason.equalsIgnoreCase(SEASONS[0]) ? 15 : 0;
 
         double newAirQuality = baseQuality - seasonPenalty;
 
